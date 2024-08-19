@@ -1,0 +1,6 @@
+
+/vm
+loader.o
+kernel.o
+/dependencies
+/.vscode
