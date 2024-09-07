@@ -1,6 +1,9 @@
 
 /vm
+/iso
 loader.o
 kernel.o
 /dependencies
 /.vscode
+krnl.bin
+/obj
