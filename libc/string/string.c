@@ -1,5 +1,5 @@
 #include "../include/string.h"
-int strlen(const char* str){
+size_t strlen(const char* str){
     char c = str[0];
     int i = 0; 
     while (c != '\0')
@@ -26,5 +26,15 @@ int memcmp(const void* v1,const void* v2, size_t s){
 }
 
 void* memcpy(void* __restrict var1, const void* __restrict var2, size_t s){
-    
+    char* v1 = (char*) var1;
+    char* v2 = (char*) var2;
+    for(size_t i = 0; i < s; i++)
+    {
+        *(v1 + i) = *(v2 + i);
+    }
+    return (void*)v1;
+}
+
+void* memmove(void* __restrict to, const void* __restrict from, size_t s){
+    return (void*)0;
 }

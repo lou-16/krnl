@@ -1,5 +1,5 @@
 #include "screen.h"
-#include "string.h"
+#include "../libc/include/string.h"
 #include <stddef.h>
 
 uint16_t* vga_buffer = (uint16_t*)0xb8000;
