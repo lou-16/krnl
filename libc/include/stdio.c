@@ -5,7 +5,7 @@
  */
 
 #include "../include/stdio.h"
-#include <stdargs.h>
+
 
 int printf(const char* str, ...){
 

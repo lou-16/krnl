@@ -1,5 +1,5 @@
 #include "screen.h"
-#include "../libc/include/string.h"
+#include "string.h"
 #include <stddef.h>
 
 uint16_t* vga_buffer = (uint16_t*)0xb8000;
@@ -9,6 +9,16 @@ uint16_t terminal_buffer[VGA_TEXT_BUFFER_SIZE] = {0};
 size_t terminal_row;
 size_t terminal_column;
 
+size_t strlen(const char* str){
+    char c = str[0];
+    int i = 0; 
+    while (c != '\0')
+    {
+        i++;
+        c = str[i];
+    }
+    return i;
+}
 
 
 void clear_screen(){

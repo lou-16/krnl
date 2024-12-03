@@ -8,7 +8,6 @@ size_t strlen(const char* str){
         c = str[i];
     }
     return i;
-    
 }
 
 int memcmp(const void* v1,const void* v2, size_t s){
