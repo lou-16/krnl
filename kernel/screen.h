@@ -43,6 +43,8 @@ extern uint16_t terminal_cursor;
 void set_terminal_cursor(uint16_t x_loc, uint16_t y_loc);
 void clear_screen();
 void print_char_to_vga(char c, uint16_t x_loc, uint16_t y_loc);
-void print_string(char* str);
+void print_string(char* str, ...);
+void print_int(int integer);
+void itoa(int integer, char* string);
 
 #endif /* SCREEN_H */  
