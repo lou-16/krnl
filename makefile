@@ -2,7 +2,7 @@
 CC = i686-elf-gcc
 LD = i686-elf-ld
 AS = i686-elf-as
-
+OBJCOPY = i686-elf-OBJCOPY
 # Directories
 KERNEL_DIR = kernel
 OBJ_DIR = obj
@@ -21,8 +21,8 @@ LINKER_SCRIPT = linker.ld
 KERNEL_BIN = krnl.bin
 
 # Flags
-CFLAGS = -ffreestanding -O2 -Wall -Wextra
-LDFLAGS = -T $(LINKER_SCRIPT) -nostdlib
+CFLAGS = -ffreestanding -O0 -Wall -Wextra  -I./libc/include/
+LDFLAGS =  -T $(LINKER_SCRIPT) -nostdlib
 ASFLAGS = 
 
 # Default target
@@ -39,10 +39,13 @@ $(LOADER_OBJ): $(LOADER_SRC) | $(OBJ_DIR)
 # Rule to compile C source files into object files
 $(OBJ_DIR)/%.o: $(KERNEL_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
+# Rule to link object files into an ELF binary for debugging
+krnl.elf: $(KERNEL_OBJS) $(LOADER_OBJ)
+	$(LD) $(LDFLAGS) -o krnl.elf $(LOADER_OBJ) $(KERNEL_OBJS)
 
 # Rule to link object files into the final kernel binary
-$(KERNEL_BIN): $(KERNEL_OBJS) $(LOADER_OBJ)
-	$(LD) $(LDFLAGS) -o $(KERNEL_BIN) $(LOADER_OBJ) $(KERNEL_OBJS)
+$(KERNEL_BIN): krnl.elf
+	$(OBJCOPY) -O binary krnl.elf $(KERNEL_BIN)
 
 # Clean up the build artifacts
 clean:

@@ -71,14 +71,23 @@ void print_string(char* str, ...){
     va_start(varlist, index);
     int special_char = 0;
 
-    for(size_t i = 0; i < size; i++){
+    for(int i = 0; i < size; i++){
         if(str[i] == '%'){
             if(str[i+1] == 'd'){
                 int x = va_arg(varlist, int);
                 index++;
                 char* string; 
                 itoa(x,string);
-                print_string(string);
+                for(uint8_t i = 0; i < strlen(string); i++){
+                    write_char(*(string + i));
+                }
+                i++;
+                continue;
+            }
+            if(str[i+1] == 'c'){
+                char x = (char)va_arg(varlist, int);
+                index++;
+                write_char(x);
                 i++;
                 continue;
             }

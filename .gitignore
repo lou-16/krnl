@@ -5,5 +5,5 @@ loader.o
 kernel.o
 /dependencies
 /.vscode
-krnl.bin
+/krnl.bin
 /obj
