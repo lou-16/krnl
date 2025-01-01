@@ -21,7 +21,7 @@ LINKER_SCRIPT = linker.ld
 KERNEL_BIN = krnl.bin
 
 # Flags
-CFLAGS = -ffreestanding -O0 -Wall -Wextra  -I./libc/include/
+CFLAGS = -g -ffreestanding -O0 -Wall -Wextra  -I./libc/include/
 LDFLAGS =  -T $(LINKER_SCRIPT) -nostdlib
 ASFLAGS = 
 
@@ -42,6 +42,7 @@ $(OBJ_DIR)/%.o: $(KERNEL_DIR)/%.c | $(OBJ_DIR)
 # Rule to link object files into an ELF binary for debugging
 krnl.elf: $(KERNEL_OBJS) $(LOADER_OBJ)
 	$(LD) $(LDFLAGS) -o krnl.elf $(LOADER_OBJ) $(KERNEL_OBJS)
+	$(OBJCOPY) --only-keep-debug krnl.elf krnl.sym
 
 # Rule to link object files into the final kernel binary
 $(KERNEL_BIN): krnl.elf

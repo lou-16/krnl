@@ -17,8 +17,7 @@ typedef struct GDT {
 } GDT;
 
 void encodeGDTEntry(char* target, GDTEntry source);
-
-
+void enable_protected_mode(void);
 void setupMemory(GDT* myGDT);
 
 

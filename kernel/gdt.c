@@ -1,7 +1,12 @@
 #include "gdt.h"
+#define GDT_ORIGIN 0xffff
 
-void encodeGDTEntry(char* target, GDTEntry source)
+void encodeGDTEntry(char* target, GDTEntry source, int base)
 {
+    if(base == 1)
+    {
+        target = (GDT_ORIGIN);
+    }
     if(source.limit > 0xFFFFFFFF){
         print_string("GDT cannot have limits larger than 0xFFFFF");
     }
@@ -25,9 +30,9 @@ void encodeGDTEntry(char* target, GDTEntry source)
 
 }
 
-void setupMemory(GDT* myGDT)
 
-    {
+void setupMemory(uint32_t* origin)
+{
     GDTEntry firstPointer = {0, 0, 0, 0}, 
     CodeSegmentK = {
         0x40000000, 0x00400000, 0x9A, 0x8
@@ -39,12 +44,9 @@ void setupMemory(GDT* myGDT)
     //DataSegmentU,
     //TaskStateSegment
     ;
-    char* origin = myGDT->firstEntry;
-
-    
-    encodeGDTEntry(origin, firstPointer);
-    encodeGDTEntry((origin + 8), CodeSegmentK);
-    encodeGDTEntry((origin + 16), DataSegmentK);
+    encodeGDTEntry(origin, firstPointer, 1);
+    encodeGDTEntry((origin + 8), CodeSegmentK, 0);
+    encodeGDTEntry((origin + 16), DataSegmentK, 0);
 }
 
 
