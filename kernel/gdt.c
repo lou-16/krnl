@@ -1,52 +1,53 @@
 #include "gdt.h"
-#define GDT_ORIGIN 0xffff
+#define MAX_GDT_SIZE 128
+#define GDT_ENTRY_SIZE 8
 
-void encodeGDTEntry(char* target, GDTEntry source, int base)
-{
-    if(base == 1)
-    {
-        target = (GDT_ORIGIN);
-    }
-    if(source.limit > 0xFFFFFFFF){
-        print_string("GDT cannot have limits larger than 0xFFFFF");
-    }
 
-    //encode the limit
+typedef struct {
+    uint32_t limit;
+    uint32_t base;
+    uint8_t flags;
+    uint8_t access;
+} GDT_struct;
+
+
+
+void encodeGDTEntry(char* target, GDT_struct source){
+    if(source.limit > 0xFFFFF){
+        print_string("this shit wont slide lil bro");
+    }
+    //encode limit (20 bit address)
     target[0] = source.limit & 0xFF;
-    target[1] = (source.limit >> 8) & 0xFF;
+    target[1] = (source.limit >> 8 ) & 0xFF;
     target[6] = (source.limit >> 16) & 0x0F;
-
-    //encode the base 
+    
+    //encode base (32 bit address)
     target[2] = source.base & 0xFF;
     target[3] = (source.base >> 8) & 0xFF;
-    target[4] = (source.base >> 24) & 0xFF;
+    target[4] = (source.base >> 16) & 0xFF;
     target[7] = (source.base >> 24) & 0xFF;
 
-    //encode the access byte
-    target[5] = source.access_byte;
+    //encode the access byte (8 bits)
+    target[5] = source.access;
 
-    //encode the flags
-    target[6] |= (source.flags << 4);
-
+    //encode the flags (4 bits (MSB))
+    target[6] |= source.flags << 4;
 }
 
+char* g_GDT[MAX_GDT_SIZE * GDT_ENTRY_SIZE];
 
-void setupMemory(uint32_t* origin)
+struct GDTDescriptor {};
+
+void setupMemory()
 {
-    GDTEntry firstPointer = {0, 0, 0, 0}, 
-    CodeSegmentK = {
-        0x40000000, 0x00400000, 0x9A, 0x8
-    }, 
-    DataSegmentK = {
-        0x40000000, 0x00800000, 0x92, 0x8
-    } 
-    //,CodeSegmentU, 
-    //DataSegmentU,
-    //TaskStateSegment
-    ;
-    encodeGDTEntry(origin, firstPointer, 1);
-    encodeGDTEntry((origin + 8), CodeSegmentK, 0);
-    encodeGDTEntry((origin + 16), DataSegmentK, 0);
+    GDT_struct data_seg_k = {
+        .base = 0x00000,
+        .limit = 0xFFFFF,
+        .access = 0x92,
+        .flags = 0xC
+    };
+    GDT_struct code_seg_k;
+    
 }
 
 
