@@ -69,9 +69,9 @@ void print_string(char* str, ...){
     int index = 0;
     size_t size = strlen(str);
     va_start(varlist, index);
-    int special_char = 0;
+    //int special_char = 0;
 
-    for(int i = 0; i < size; i++){
+    for(size_t i = 0; i < size; i++){
         if(str[i] == '%'){
             if(str[i+1] == 'd'){
                 int x = va_arg(varlist, int);

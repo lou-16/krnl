@@ -24,8 +24,6 @@ stack_top:
 .type loader, @function
 
 .section .text
-.global enable_protected_mode
-.type enable_protected_mode, @function
 
 
 loader: 
@@ -39,10 +37,6 @@ __stop:
     hlt
     jmp __stop
 
-enable_protected_mode:
-    cli
-    lgdt [gdt_descriptor]
-    mov     
 
 
 

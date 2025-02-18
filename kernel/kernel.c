@@ -2,10 +2,9 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include "asmfunc.s"
 
 #include "screen.h"
-#include "gdt.h"
+
 
 
 void memset(void* location, int len, char value){
@@ -16,6 +15,11 @@ void memset(void* location, int len, char value){
     }
 }
 
+int is_protected_mode(){
+    uint16_t cs;
+    asm volatile ("mov %%cs, %0":"=r"(cs));
+    return (cs != 0x08);
+}
 
 
 extern void  __kernelMain(){
@@ -23,7 +27,14 @@ extern void  __kernelMain(){
 
     clear_screen();
     print_string("[+] loading the kernel\n");
-    print_string("[+] kernel loaded\n");
+
+    if(is_protected_mode()){
+        print_string("protected mode is enabled!\n");
+    } else {
+        print_string("protected mode wasnt turned on\n");
+    }
+    
+    //print_string("[+] kernel loaded\n");
 
     print_string("%d\n", 5);
  

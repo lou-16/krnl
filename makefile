@@ -1,56 +1,63 @@
 # Cross compiler prefix
-CC = i686-elf-gcc
-LD = i686-elf-ld
-AS = i686-elf-as
-OBJCOPY = i686-elf-OBJCOPY
-# Directories
-KERNEL_DIR = kernel
-OBJ_DIR = obj
+CC := i686-elf-gcc
+LD := i686-elf-ld
+AS := i686-elf-as
+OBJCOPY := i686-elf-objcopy
 
+# Directories
+KERNEL_DIR := kernel
+OBJ_DIR := obj
 
 # Source files
-KERNEL_SRCS = $(wildcard $(KERNEL_DIR)/*.c)
-KERNEL_OBJS = $(patsubst $(KERNEL_DIR)/%.c,$(OBJ_DIR)/%.o,$(KERNEL_SRCS))
-LOADER_SRC = loader.s
-LOADER_OBJ = $(OBJ_DIR)/loader.o
+KERNEL_SRCS := $(wildcard $(KERNEL_DIR)/*.c)
+ASM_SRCS := $(wildcard $(KERNEL_DIR)/*.s)
+KERNEL_OBJS := $(patsubst $(KERNEL_DIR)/%.c,$(OBJ_DIR)/%.o,$(KERNEL_SRCS))
+ASM_OBJS := $(patsubst $(KERNEL_DIR)/%.s,$(OBJ_DIR)/%.o,$(ASM_SRCS))
+LOADER_SRC := loader.s
+LOADER_OBJ := $(OBJ_DIR)/loader.o
 
 # Linker script
-LINKER_SCRIPT = linker.ld
+LINKER_SCRIPT := linker.ld
 
-# Output kernel binary
-KERNEL_BIN = krnl.bin
+# Output files
+KERNEL_ELF := krnl.elf
+KERNEL_BIN := krnl.bin
+DEBUG_SYM := krnl.sym
 
 # Flags
-CFLAGS = -g -ffreestanding -O0 -Wall -Wextra  -I./libc/include/
-LDFLAGS =  -T $(LINKER_SCRIPT) -nostdlib
-ASFLAGS = 
+CFLAGS := -g -ffreestanding -O0 -Wall -Wextra -I./libc/include/
+LDFLAGS := -T $(LINKER_SCRIPT) -nostdlib
 
 # Default target
 all: $(KERNEL_BIN)
 
-# Rule to create the object directory if it doesn't exist
+# Create object directory
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-# Rule to assemble loader.s into an object file
+# Compile assembly source
 $(LOADER_OBJ): $(LOADER_SRC) | $(OBJ_DIR)
-	$(AS) $(ASFLAGS) -o $@ $<
+	$(AS) -o $@ $<
 
-# Rule to compile C source files into object files
+$(OBJ_DIR)/%.o: $(KERNEL_DIR)/%.s | $(OBJ_DIR)
+	$(AS) -o $@ $<
+
+# Compile C source files
 $(OBJ_DIR)/%.o: $(KERNEL_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
-# Rule to link object files into an ELF binary for debugging
-krnl.elf: $(KERNEL_OBJS) $(LOADER_OBJ)
-	$(LD) $(LDFLAGS) -o krnl.elf $(LOADER_OBJ) $(KERNEL_OBJS)
-	$(OBJCOPY) --only-keep-debug krnl.elf krnl.sym
 
-# Rule to link object files into the final kernel binary
-$(KERNEL_BIN): krnl.elf
-	$(OBJCOPY) -O binary krnl.elf $(KERNEL_BIN)
+# Link object files into ELF binary
+$(KERNEL_ELF): $(KERNEL_OBJS) $(ASM_OBJS) $(LOADER_OBJ)
+	$(LD) $(LDFLAGS) -o $@ $^ 
+	$(OBJCOPY) --only-keep-debug $@ $(DEBUG_SYM)
 
-# Clean up the build artifacts
+# Convert ELF to raw binary
+$(KERNEL_BIN): $(KERNEL_ELF)
+	$(OBJCOPY) -O binary $< $@
+
+# Clean build artifacts
 clean:
-	rm -rf $(OBJ_DIR) $(KERNEL_BIN)
+	rm -rf $(OBJ_DIR) $(KERNEL_ELF) $(KERNEL_BIN) $(DEBUG_SYM)
 
 # Phony targets
 .PHONY: all clean
