@@ -1,7 +1,0 @@
-/mnt/d/dev/krnl/build/CMakeFiles/kernel.elf.dir
-/mnt/d/dev/krnl/build/CMakeFiles/edit_cache.dir
-/mnt/d/dev/krnl/build/CMakeFiles/rebuild_cache.dir
-/mnt/d/dev/krnl/build/boot/CMakeFiles/edit_cache.dir
-/mnt/d/dev/krnl/build/boot/CMakeFiles/rebuild_cache.dir
-/mnt/d/dev/krnl/build/kernel/CMakeFiles/edit_cache.dir
-/mnt/d/dev/krnl/build/kernel/CMakeFiles/rebuild_cache.dir

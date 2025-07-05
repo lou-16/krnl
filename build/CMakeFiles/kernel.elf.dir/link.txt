@@ -1,1 +1,0 @@
-/usr/bin/cc -m32 -ffreestanding -nostdlib -fno-pic -T /mnt/d/dev/krnl/linker.ld -nostdlib CMakeFiles/kernel.elf.dir/boot/boot.asm.o CMakeFiles/kernel.elf.dir/kernel/kernel.c.o CMakeFiles/kernel.elf.dir/kernel/gdt.c.o CMakeFiles/kernel.elf.dir/kernel/gdt.asm.o -o kernel.elf 
