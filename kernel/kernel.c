@@ -1,43 +1,28 @@
-#include <stdint.h>
-#include <stddef.h>
-#include <stdbool.h>
+#include "serial.h"
+#include "gdt.h"
+#include "video.h"
+#include "multiboot.h"
+#include "memmap.h"
 
 
-#include "screen.h"
+void kernel_main(uint32_t magic, multiboot_info_t* mbi){
 
-
-
-void memset(void* location, int len, char value){
-    uint8_t* l = (uint8_t*)location;
-
-    for(int i = 0; i < len; i++){
-        l[i] = value;
+    if( magic != MULTIBOOT_BOOTLOADER_MAGIC) {
+        serial_write_string("Invalid multiboot magic");
+        return;
     }
-}
 
-int is_protected_mode(){
-    uint16_t cs;
-    asm volatile ("mov %%cs, %0":"=r"(cs));
-    return (cs != 0x08);
-}
+    dump_memory_map(mbi);
 
+   
+    gdt_install();
 
-extern void  __kernelMain(){
+    //test output
+    terminal_initialize();
+    terminal_writestring("Hello world\n");
 
+    serial_init();
+    serial_write_string("Hello from serial output!\n");
 
-    clear_screen();
-    print_string("[+] loading the kernel\n");
-
-    if(is_protected_mode()){
-        print_string("protected mode is enabled!\n");
-    } else {
-        print_string("protected mode wasnt turned on\n");
-    }
-    
-    //print_string("[+] kernel loaded\n");
-
-    print_string("%d\n", 5);
- 
-    while (1);
-    
+    while(1);
 }

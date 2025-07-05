@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "*.ejs": "html",
-        "*.s": "asm-intel-x86-generic",
-        "stdlib.h": "c"
-    }
-}
