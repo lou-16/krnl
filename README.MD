@@ -6,7 +6,6 @@
 
 Welcome to **krnl**, a minimal 32-bit x86 kernel built from scratch. It boots using GRUB, prints via serial, and lays the foundation for more advanced OS concepts like memory management, paging, and drivers.
 
-![Boot Screenshot](docs/assets/boot-success.png)
 
 ---
 
