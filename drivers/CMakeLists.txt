@@ -1,0 +1,4 @@
+set(KERNEL_SRC ${KERNEL_SRC}
+    ${CMAKE_CURRENT_SOURCE_DIR}/keyboard.c
+    PARENT_SCOPE
+)

@@ -19,4 +19,6 @@ struct gdt_ptr{
 
 void gdt_install();
 
+int check_protected_mode();
+
 #endif
