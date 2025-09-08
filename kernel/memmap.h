@@ -2,6 +2,8 @@
 #define MEMMAP_H
 
 #include <stdint.h>
+#include <stdbool.h>
+
 #include "multiboot.h"
 #include "serial.h"
 
@@ -13,7 +15,7 @@ uint64_t lengths[MAX_MEM_ENTRIES];
 multiboot_memory_map_t* kmainmem = NULL;
 int idx = 0;
 
-void memset(uint8_t* p, uint16_t l, uint16_t v) {
+void memset(uint8_t* p, uint32_t l, uint16_t v) {
     for(size_t i = 0; i < l; i++){
         p[i] = v;
     }
@@ -23,7 +25,7 @@ void memset(uint8_t* p, uint16_t l, uint16_t v) {
 int dump_memory_map(multiboot_info_t* mb) {
     serial_write_string("\n[MEMORY MAP DUMP]\n");
 
-    if (!(mb->flags & (MULTIBOOT_FLAG_MMAP))) {
+    if (!((mb->flags) & (MULTIBOOT_FLAG_MMAP))) {
         serial_write_string("No memory map available \n");
         return 1;
     }
@@ -75,15 +77,31 @@ int64_t kgetmemsize(){
 //and then simply based on the amount of memory asked, give and provide. but i should also make 
 // some structure that tracks the allocation calls. 
 
-
+#define BITMAP_SIZE 512   // 512 bytes = 4096 bits
 
 typedef struct {
     uint8_t* p;
     uint8_t len; // should be 4 KB or 4096 Bytes
     uint8_t proc_id; 
     uint8_t flag; //1 if true and vice versa
-    uint8_t used_bytes[512]; // bitmap for bytes used.
+    uint8_t used_bytes[BITMAP_SIZE]; // bitmap for bytes used.
 } mem_block_t;
+
+
+// Get the bit at index x (0..4095)
+static inline bool get_bit(const uint8_t bitmap[BITMAP_SIZE], int x) {
+    return (bitmap[x / 8] >> (x % 8)) & 1U;
+}
+
+// Set the bit at index x (0..4095)
+static inline void set_bit(uint8_t bitmap[BITMAP_SIZE], int x) {
+    bitmap[x / 8] |= (1U << (x % 8));
+}
+
+// Clear the bit at index x (0..4095)
+static inline void clear_bit(uint8_t bitmap[BITMAP_SIZE], int x) {
+    bitmap[x / 8] &= ~(1U << (x % 8));
+}
 
 struct m_map {
     mem_block_t* mem_block_array;
@@ -98,7 +116,7 @@ struct m_map* m = &mmap;
 // cast to mem_block_t to use pls
 void* kcreate_memmap(){
     //we clear the memblockarray;
-    memset(m->mem_block_array, MAX_MEM_ENTRIES, 0);
+    memset(m->mem_block_array, MAX_MEM_ENTRIES * sizeof(mem_block_t), 0);
     
     //set index and length of mmap
     m->idx = 0;
@@ -120,11 +138,29 @@ void* kcreate_memmap(){
     return (void*)m->mem_block_array;
 }
 
+// let x be the number of 0's to find simultaneously
+int find_first_fit_malloc_internal(mem_block_t* memblock, int x) {
+    int idx = 0;
+    if(x > 4096) {
+        // -2 denotes a call to kmalloc_2;
+        return -2;
+    }
+    bool found = false;
+    while(idx + x < 4096 && !found){
+        
+    } 
+}
+
 void* kmalloc(int size){
     // check if mem available
     if(m->mem_in_use_size > (m->max_mem_size + size)){
         return (void*)0;
     }
+    return kmalloc_2()
+
+}
+
+void* kmalloc_2(uint32_t size){
     
 }
 
