@@ -116,7 +116,7 @@ struct m_map* m = &mmap;
 // cast to mem_block_t to use pls
 void* kcreate_memmap(){
     //we clear the memblockarray;
-    memset(m->mem_block_array, MAX_MEM_ENTRIES * sizeof(mem_block_t), 0);
+    memset((char*)m->mem_block_array, MAX_MEM_ENTRIES * sizeof(mem_block_t), 0);
     
     //set index and length of mmap
     m->idx = 0;
@@ -151,18 +151,6 @@ int find_first_fit_malloc_internal(mem_block_t* memblock, int x) {
     } 
 }
 
-void* kmalloc(int size){
-    // check if mem available
-    if(m->mem_in_use_size > (m->max_mem_size + size)){
-        return (void*)0;
-    }
-    return kmalloc_2()
-
-}
-
-void* kmalloc_2(uint32_t size){
-    
-}
 
 
 #endif
