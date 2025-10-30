@@ -4,6 +4,7 @@
 #include <stdint.h>
 #define IDT_MAX_DESCRIPTORS 256
 #include "video.h"
+#include "../drivers/pic/pic.h"
 
 /**
  * :: offset : 32 bit valiue, address of the entry point of the ISR;
@@ -42,14 +43,17 @@ void set_idt_gate(int idx, void* offset, uint16_t selector, uint8_t type_attr) {
     idt[idx].type_attribs = type_attr;
 }
 
-void setup_exceptions() {
-    //temporary isr_div_by_zero initialisation
+#define PIC1 0x20
+#define PIC2 0xA0
 
+
+void setup_exceptions() {
+    // move master and slave PICs so that my ints and cpu ints do not overlap
 
     for(int i = 0; i < 32; i++) {
         set_idt_gate(i, isr_stub_table[i], 0x08, 0x8e);
     }
-    serial_write_string("exceptions set up");
+    serial_write_string("\n[CPU IRQ] set up the stubs for CPU faults.\n[TODO] implement proper ISRs\n");
 }
 
 struct idt_ptr_t {
@@ -65,6 +69,9 @@ void load_idt() {
     //load that into idtr (idt register )
     asm volatile ("lidt %0" : : "m"(ptr));
     serial_write_string("\nload_idt\n");
+
+    // init PIC from 0x20 and second at 0x28
+    PIC_remap(0x20, 0x28);
 }
 
 void test_div_by_zero() {
