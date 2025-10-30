@@ -1,0 +1,5 @@
+set(DRIVER_SRC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/pic/pic.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/ps2/keyboard.c
+    PARENT_SCOPE
+)

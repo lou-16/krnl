@@ -24,9 +24,18 @@ void gdt_install() {
     gp.base = (uint32_t)&gdt;
 
     gdt_set_entry(0,0,0,0,0);
-    gdt_set_entry(1, 0, 0xFFFFFFFF, 0x9a, 0xcf);
-    gdt_set_entry(2, 0, 0xFFFFFFFF, 0x92, 0xcf);
+    gdt_set_entry(1, 0, 0xFFFFFFFF, 0x9a, 0xcf); //code seg
+    gdt_set_entry(2, 0, 0xFFFFFFFF, 0x92, 0xcf); // data seg
 
     gdt_flush((uint32_t) &gp);
     serial_write_string("[+] GDT set up\n");
+}
+
+int check_protected_mode() {
+    uint32_t mode;
+    asm volatile("mov %%cr0, %0" : "=r"(mode));
+    if (mode & 0x1) {
+        return 0;
+    }
+    return 1;
 }

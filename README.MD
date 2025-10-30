@@ -6,6 +6,13 @@
 
 Welcome to **krnl**, a minimal 32-bit x86 kernel built from scratch. It boots using GRUB, prints via serial, and lays the foundation for more advanced OS concepts like memory management, paging, and drivers.
 
+## History / Devlog
+
+I also implemented some simple interrupts. for the first 32 interrupts, which are CPU's own internal IRQs, i simply created a stub that resets them to 0 for now. but the later 8, and then 8 ISRs are for the Master and Slave PIC. which obviously means that this isn't relying on the modern APIC microcontrollers. which is fine.
+
+Next i aim to use the IRQ0 and IRQ1, which are essentially the IRQ32, and IRQ33 if we look at the IDT, for timing (using PIT), and for a PS/2 Keyboard that will allow me to get some input. which means in the near future, i'll be able to get a tty working. Meanwhile i implemented 2 syscalls, although i have not added a syscall_table that i can use to create a table for my syscalls. so if im being honest, its really just a sleep and a abort function for now.
+
+- lou-16 (30-10-2025)
 
 ---
 
