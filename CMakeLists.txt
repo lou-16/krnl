@@ -14,9 +14,9 @@ find_program(CMAKE_OBJCOPY objcopy REQUIRED)
 
 add_subdirectory(boot)
 add_subdirectory(kernel)
+add_subdirectory(drivers)
 
-
-add_executable(kernel.elf ${BOOT_SRC} ${KERNEL_SRC})
+add_executable(kernel.elf ${BOOT_SRC} ${KERNEL_SRC} ${DRIVER_SRC})
 set_target_properties(kernel.elf PROPERTIES LINKER_LANGUAGE C)
 
 set_target_properties(kernel.elf PROPERTIES
@@ -26,5 +26,5 @@ set_target_properties(kernel.elf PROPERTIES
 add_custom_command(
     TARGET kernel.elf POST_BUILD
     COMMAND ${CMAKE_OBJCOPY} -O binary kernel.elf kernel.bin
-    COMMENT "Converting ELF to flat binary"
+    COMMAND echo "[+] Converting to an ELF binary\n\n\n"
 )
