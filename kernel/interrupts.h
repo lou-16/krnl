@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #define IDT_MAX_DESCRIPTORS 256
-#include "video.h"
+
 #include "../drivers/pic/pic.h"
 
 /**

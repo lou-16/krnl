@@ -9,6 +9,8 @@
 
 #define MAX_MEM_ENTRIES 64
 
+typedef uint32_t mem_loc_t;
+
 uint64_t usable_mask = 0;
 uint64_t base_addrs[MAX_MEM_ENTRIES];
 uint64_t lengths[MAX_MEM_ENTRIES];
@@ -80,10 +82,10 @@ int64_t kgetmemsize(){
 #define BITMAP_SIZE 512   // 512 bytes = 4096 bits
 
 typedef struct {
-    uint8_t* p;
+    mem_loc_t* p;
     uint8_t len; // should be 4 KB or 4096 Bytes
     uint8_t proc_id; 
-    uint8_t flag; //1 if true and vice versa
+    uint8_t use; //1 if true and vice versa
     uint8_t used_bytes[BITMAP_SIZE]; // bitmap for bytes used.
 } mem_block_t;
 
@@ -107,8 +109,9 @@ struct m_map {
     mem_block_t* mem_block_array;
     int len;
     int idx;
-    int mem_in_use_size;
+    uint32_t mem_in_use_size;
     uint32_t max_mem_size;
+    uint32_t max_usable_mem_size;
 };
 struct m_map mmap;
 struct m_map* m = &mmap;
@@ -125,32 +128,67 @@ void* kcreate_memmap(){
     // size based variables
     m->mem_in_use_size = 0;
     m->max_mem_size = kgetmemsize();
-    
-    /*let us set up a way to track where anything is stored
-      i think a 2 layer block based method where one block stores 
-      4 KB of blocks
-      and each of those blocks store in a bitmap what all bytes r allocated.
-      so now we do a first come first serve.  
-    */
+    m->max_usable_mem_size = m->max_mem_size - 1024 * sizeof(INTMAX_MAX);
 
- 
+    serial_write_string("\nthe memory size is\n");
+    serial_write_dec((int)((m->max_mem_size) / (1000.0 * 1000.0))); // returns MBs
+    serial_write_string(" MB\nmemmap location is\n");
+    serial_write_hex32(m);
+    serial_write_string("\n");
+
     //return the location of the mem_block_array
     return (void*)m->mem_block_array;
 }
 
-// let x be the number of 0's to find simultaneously
-int find_first_fit_malloc_internal(mem_block_t* memblock, int x) {
-    int idx = 0;
-    if(x > 4096) {
-        // -2 denotes a call to kmalloc_2;
-        return -2;
+// only allocates a page
+
+#define MEM_START 0x01000000
+
+
+// cast to mem_loc_t, will only be called by kmalloc, so we set the in use flag here [TODO] fix
+void* find_first_page_free()
+{
+    for(size_t i = MEM_START; i < m->max_usable_mem_size; i++)
+    {
+        // if first bit is set to 0 (not in use)
+        if(get_bit((m->mem_block_array[i]).used_bytes, 0) == 0){
+            m->mem_block_array[i].use = true;
+            return (void*)m->mem_block_array[i].p;
+        }
     }
-    bool found = false;
-    while(idx + x < 4096 && !found){
-        
-    } 
+    // else this means we ran of out memory, highly unlikely since we have 4kb pages and a bunch of memory. but if it does happen
+    serial_write_string("[CRITICAL] memory ran out. triple faulting");
+    abort();
 }
 
 
+
+void* kmalloc(size_t size)
+{
+   if(size < 4096)
+   {
+        return (void*) find_first_page_free();
+        
+   }
+   else {
+    // TODO, implement a malloc for larger size
+    return NULL;
+   }
+}
+
+
+
+int kfree(void* p)
+{
+    mem_loc_t page = (mem_loc_t) p;
+    for (size_t i = 0; i < m->max_usable_mem_size; i++)
+    {
+        mem_block_t* block = &(m->mem_block_array[i]);
+        if(block->p == page){
+            block->use = false;
+            return 0;
+        }
+    }
+}
 
 #endif

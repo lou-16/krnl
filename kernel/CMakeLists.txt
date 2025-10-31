@@ -5,6 +5,5 @@ set(KERNEL_SRC ${KERNEL_SRC}
     ${CMAKE_CURRENT_SOURCE_DIR}/exceptions.asm
     ${CMAKE_CURRENT_SOURCE_DIR}/exceptions.c
     ${CMAKE_CURRENT_SOURCE_DIR}/serial.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/video.c
     PARENT_SCOPE
 )
