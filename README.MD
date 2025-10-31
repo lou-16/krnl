@@ -14,6 +14,18 @@ Next i aim to use the IRQ0 and IRQ1, which are essentially the IRQ32, and IRQ33 
 
 - lou-16 (30-10-2025)
 
+Got the Bochs Graphics Adapter (BGA) working with a simple driver — enough to get a framebuffer up and running. Added a basic PCI config reader to detect devices like the BGA.
+
+Cleaned up the project quite a bit: removed old video and fs headers, simplified CMakeLists.txt, and trimmed unused files.
+
+Set up the first version of memory management, with kmalloc and kfree handling full-page allocations for now. This will later evolve into a proper heap allocator.
+
+Implemented some basic interrupts — the first 32 CPU exceptions are stubbed, while the PIC handles IRQs 32–47. Not using APIC yet, just the legacy setup.
+
+Next up: IRQ0 (timer) and IRQ1 (keyboard) for the PIT and PS/2 input, which should finally get a TTY working. Also added two early syscalls (sleep and abort) — no syscall table yet, just enough to test the mechanism.
+
+- lou-16 (1-11-2025)
+
 ---
 
 ## ✨ Features
