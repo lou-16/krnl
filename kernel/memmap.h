@@ -7,6 +7,8 @@
 #include "multiboot.h"
 #include "serial.h"
 
+#include "sys/abort.h"
+
 #define MAX_MEM_ENTRIES 64
 
 typedef uint32_t mem_loc_t;
@@ -133,7 +135,7 @@ void* kcreate_memmap(){
     serial_write_string("\nthe memory size is\n");
     serial_write_dec((int)((m->max_mem_size) / (1000.0 * 1000.0))); // returns MBs
     serial_write_string(" MB\nmemmap location is\n");
-    serial_write_hex32(m);
+    serial_write_hex32((uint32_t)m);
     serial_write_string("\n");
 
     //return the location of the mem_block_array
@@ -158,7 +160,6 @@ void* find_first_page_free()
     }
     // else this means we ran of out memory, highly unlikely since we have 4kb pages and a bunch of memory. but if it does happen
     serial_write_string("[CRITICAL] memory ran out. triple faulting");
-    abort();
 }
 
 
@@ -177,7 +178,7 @@ void* kmalloc(size_t size)
 }
 
 
-
+/*
 int kfree(void* p)
 {
     mem_loc_t page = (mem_loc_t) p;
@@ -190,5 +191,6 @@ int kfree(void* p)
         }
     }
 }
+*/
 
 #endif
