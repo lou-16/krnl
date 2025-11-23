@@ -1,0 +1,32 @@
+name: Build and Release ISO
+
+on : 
+  push : 
+    branches: 
+      - "main"
+  workflow_dispatch:
+    
+permissions:
+  contents: write
+jobs:
+  builds:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses:  actions/checkout@v4
+      - name:  Install Dependencies
+        run:  |
+            sudo apt-get update
+            sudo apt-get install -y cmake make tree grub-pc-bin xorriso
+      - name:  run ./build_iso.sh 
+        run:  |
+            chmod +x ./build_iso.sh
+            ./build_iso.sh
+      - name: Add krnl.iso to Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Krnl.iso for use with QEMU
+          files:  ./krnl.iso
+        env:
+          GITHUB_TOKEN:  ${{  secrets.GITHUB_TOKEN  }}
