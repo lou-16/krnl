@@ -14,6 +14,31 @@ jobs:
 
     steps:
       - uses:  actions/checkout@v4
+      - name: Cache i386-elf-gcc
+        id: cache-gcc
+        uses: actions/cache@v4
+        with:
+            path: cross
+            key: xpack-i386-elf-gcc-v16
+
+      - name: Download cross compiler
+        if: steps.cache-gcc.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p cross
+          wget \
+            https://github.com/xpack-dev-tools/i386-elf-gcc-xpack/releases/latest/download/xpack-i386-elf-gcc-16.1.0-1-linux-x64.tar.gz \
+            -O gcc.tar.gz
+            tar xf gcc.tar.gz -C cross --strip-components=1
+
+      - name: Add cross compiler to PATH
+        run: echo "$PWD/cross/bin" >> $GITHUB_PATH
+
+    # -----------------------------
+    # Install NASM
+    # -----------------------------
+      - name: Install NASM
+        run: sudo apt-get install -y nasm
+
       - name:  Install Dependencies
         run:  |
             sudo apt-get update
