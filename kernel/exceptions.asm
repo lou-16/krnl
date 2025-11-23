@@ -32,6 +32,7 @@ isr_pic_handler_%+%1:
     call isr_handler_c
     add esp, 4
     iret
+%endmacro
 
 isr_no_err_stub 0
 isr_no_err_stub 1
