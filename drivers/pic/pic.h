@@ -28,6 +28,13 @@
 
 #define CASCADE_IRQ 2
 
+struct regs {
+    uint32_t gs, fs, es, ds;
+    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
+    uint32_t int_no, err_code;
+    uint32_t eip, cs, eflags, useresp, ss;
+};
+
 /*
 arguments:
 	offset1 - vector offset for master PIC
@@ -35,6 +42,8 @@ arguments:
 	offset2 - same for slave PIC: offset2..offset2+7
 */
 void PIC_remap(uint16_t	 offset1, uint16_t offset2);
+
+void PIC_unmask_master(uint8_t irq);
 
 #define PIC_EOI 0x20
 //end of interrupt 

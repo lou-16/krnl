@@ -40,6 +40,8 @@ Next up: IRQ0 (timer) and IRQ1 (keyboard) for the PIT and PS/2 input, which shou
 ---
 
 ## 🚀 Booting the Kernel
+```bash
+qemu-system-i386 -cdrom krnl.iso -serial stdio -vga std
 
 ### Build & ISO Generation
 

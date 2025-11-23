@@ -1,5 +1,5 @@
 #ifndef ABORT_H
 #define ABORT_H
 
-void abort();
+void sys_abort();
 #endif

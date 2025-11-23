@@ -4,9 +4,8 @@
 #include "memmap.h"
 #include "interrupts.h"
 #include "../drivers/vga/BGA.h"
-
+#include "../drivers/pit/pit.h"
 // drivers
-
 
 void kernel_main(uint32_t magic, multiboot_info_t* mbi){
 
@@ -24,13 +23,11 @@ void kernel_main(uint32_t magic, multiboot_info_t* mbi){
     };
     kcreate_memmap();
     
+    setup_exceptions();
     load_idt();
     //install_irq_handlers();
-
     //test output
     serial_write_string("Hello from serial output!\n");
-    
-    setup_exceptions();
 
     bga_enable();
     bga_test();

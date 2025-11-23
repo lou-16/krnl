@@ -40,4 +40,14 @@ static inline uint32_t inl(uint32_t port)
     return ret;
 }
 
+static void cli()
+{
+    asm volatile("cli");
+}
+
+static void sti()
+{
+    asm volatile ("sti");
+}
+
 #endif

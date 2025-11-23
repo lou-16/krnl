@@ -2,7 +2,7 @@
 #define SYS_ABORT
 
 #include <stdint.h>
-void abort()
+void sys_abort()
 {
     asm volatile ("cli");
     // triple fault on next int by having a null IDT
