@@ -1,4 +1,5 @@
 extern exception_handler
+extern isr_handler_c
 
 isr_div_by_zero:
     push dword 0
@@ -9,6 +10,7 @@ isr_div_by_zero:
 %macro isr_err_stub 1
 
 isr_stub_%+%1:
+    push 
     push dword %1
     call exception_handler
     add esp, 4
@@ -23,6 +25,13 @@ isr_stub_%+%1:
     add esp, 4
     iret
 %endmacro
+
+%macro isr_pic_handler 1
+isr_pic_handler_%+%1:
+    push dword %1
+    call isr_handler_c
+    add esp, 4
+    iret
 
 isr_no_err_stub 0
 isr_no_err_stub 1
