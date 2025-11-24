@@ -10,7 +10,6 @@ isr_div_by_zero:
 %macro isr_err_stub 1
 
 isr_stub_%+%1:
-    push 
     push dword %1
     call exception_handler
     add esp, 4
@@ -28,10 +27,30 @@ isr_stub_%+%1:
 
 %macro isr_pic_handler 1
 isr_pic_handler_%+%1:
+    cli
+    pushad
+    push ds
+    push es
+    push fs
+    push gs
+
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
     push dword %1
     call isr_handler_c
+
+    pop gs
+    pop fs
+    pop es
+    pop ds
+    popad
     add esp, 4
     iret
+    
 %endmacro
 
 isr_no_err_stub 0
