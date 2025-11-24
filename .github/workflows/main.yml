@@ -27,7 +27,7 @@ jobs:
       - name:  Install Dependencies
         run:  |
             sudo apt-get update
-            sudo apt-get install -y cmake make tree grub-pc-bin xorriso
+            sudo apt-get install -y cmake make tree grub-pc-bin xorriso mtools
       - name:  run ./build_iso.sh 
         run:  |
             chmod +x ./build_iso.sh
