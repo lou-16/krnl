@@ -10,13 +10,14 @@ Welcome to **krnl**, a minimal 32-bit x86 kernel built from scratch. It boots us
 
 ## ✨ Features
 
-- 🧱 Written in C + NASM (Assembly)
-- 📦 Multiboot-compliant, booted via GRUB
-- 📜 Serial port output (COM1)
-- 🧠 GDT (Global Descriptor Table) setup
-- 🧼 Clean ISO build pipeline using CMake + Bash
-- 🗺️ Memory map parsing from Multiboot
-
+- **Freestanding x86 kernel** written in **C and NASM**, with no reliance on a hosted runtime  
+- **Multiboot-compliant boot flow**, loaded via **GRUB**, with validated Multiboot structures  
+- **Early serial debugging (COM1)** for low-level logging prior to console initialization  
+- **Global Descriptor Table (GDT)** initialization with flat kernel segments and correct selector semantics  
+- **Interrupt Descriptor Table (IDT)** with handcrafted ISR stubs and a unified exception handling path  
+- **Correct CPU exception stack-frame handling**, including precise separation of error-code and non-error-code exceptions  
+- **Deterministic ISO build pipeline** using **CMake and shell tooling**  
+- **Physical memory map parsing** from Multiboot for early memory introspection and allocator groundwork  
 ---
 
 ## 🚀 Booting the Kernel
