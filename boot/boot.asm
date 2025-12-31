@@ -19,6 +19,8 @@ global _start
 
 _start: 
 
+    ; DISABLE INTERRUPTS
+    cli
     mov esp, stack_top
     
     push ebx
