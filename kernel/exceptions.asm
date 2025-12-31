@@ -1,57 +1,47 @@
 extern exception_handler
-extern isr_handler_c
-
-isr_div_by_zero:
-    push dword 0
-    call exception_handler
-    add esp, 4
-    iret
 
 %macro isr_err_stub 1
-
 isr_stub_%+%1:
-    push dword %1
-    call exception_handler
-    add esp, 4
-    iret
-
+    push %1
+    jmp common_handler
 %endmacro
 
 %macro isr_no_err_stub 1
 isr_stub_%+%1:
-    push dword %1
-    call exception_handler
-    add esp, 4
-    iret
+    push 0
+    push %1
+    jmp common_handler
 %endmacro
 
-%macro isr_pic_handler 1
-isr_pic_handler_%+%1:
-    cli
-    pushad
-    push ds
-    push es
-    push fs
-    push gs
+; EFLAGS, CS, EIP, errorCode.
+common_handler:
+    ;lets push all the regs that we need.
+    ;EAX, ECX, EDX,EBX, ESP (the value prior to executing the PUSHA instruction), EBP, ESI, and EDI
+    pusha
+    push ds      ; ds
+    push es      ; es
+    push fs     ; fs
+    push gs      ;gs
 
     mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
+    mov ss, ax 
 
-    push dword %1
-    call isr_handler_c
+    push esp
+    call exception_handler
+    add esp, 4
 
     pop gs
     pop fs
-    pop es
+    pop es 
     pop ds
-    popad
-    add esp, 4
-    iret
-    
-%endmacro
+    popa 
+    ;pop ; pop the CPU shit  
+    add esp, 8
+    iretd
 
 isr_no_err_stub 0
 isr_no_err_stub 1
@@ -85,6 +75,8 @@ isr_no_err_stub 28
 isr_no_err_stub 29
 isr_err_stub    30
 isr_no_err_stub 31
+
+isr_no_err_stub 32
 
 global isr_stub_table
 isr_stub_table:
