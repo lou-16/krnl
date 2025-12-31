@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(krnl C ASM)
 
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_FLAGS "-m32 -ffreestanding -nostdlib -fno-pic")
+set(CMAKE_C_FLAGS "-m32 -ffreestanding -nostdlib -fno-pic -fno-omit-frame-pointer")
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE OFF)

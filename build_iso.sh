@@ -19,6 +19,8 @@ ISO_DIR=iso
 GRUB_DIR=$ISO_DIR/boot/grub
 KERNEL_ELF_NAME=kernel.elf
 ISO_OUTPUT=krnl.iso
+DISASSEMBLY_DIR=debug
+DISASSEMBLY_FILE=kernel.asm
 
 # ------------------------------------------------------------------------------
 echo -e "${CYAN}[${BOLD}+${RESET}${CYAN}] Cleaning previous build...${RESET}"
@@ -30,7 +32,7 @@ mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
 
 echo -e "${CYAN}[${BOLD}+${RESET}${CYAN}] Running CMake...${RESET}"
-cmake .. > /dev/null
+cmake .. 
 
 echo -e "${CYAN}[${BOLD}+${RESET}${CYAN}] Building project...${RESET}"
 make -j$(nproc) > /dev/null
@@ -54,10 +56,10 @@ cp "$KERNEL_ELF_PATH" "$ISO_DIR/boot/$KERNEL_ELF_NAME"
 # ------------------------------------------------------------------------------
 echo -e "${CYAN}[${BOLD}+${RESET}${CYAN}] Writing GRUB configuration...${RESET}"
 cat > "$GRUB_DIR/grub.cfg" <<EOF
-set timeout=0
+set timeout=-1
 set default=0
 
-menuentry "My Kernel" {
+menuentry "krnl - lou-16's Kernel" {
     multiboot /boot/$KERNEL_ELF_NAME
     boot
 }
