@@ -12,6 +12,8 @@
 
 void pit_init(uint32_t frequency);
 
+extern volatile uint8_t redraw;
+
 void pit_handler(void);
 
 #endif

@@ -38,6 +38,9 @@
 
 #define RGB565(r,g,b) ( ((r & 0x1F) << 11) | ((g & 0x3F) << 5) | (b & 0x1F) )
 
+#define COLOR_BG 0x7bef
+#define COLOR_TEXT 0xffff 
+
 typedef struct {
     uint32_t fb;
     uint32_t fb_size;
@@ -70,4 +73,8 @@ void bga_test_fill(uint32_t fb_addr, uint16_t width, uint16_t height);
 void bga_test();
 
 void bga_putpixel(uint16_t x, uint16_t y, uint16_t color);
+
+void test_color(uint16_t c);
+
+
 #endif /* ENDIF BGA_H */

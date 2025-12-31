@@ -143,6 +143,21 @@ void bga_test_fill(uint32_t fb_addr, uint16_t width, uint16_t height)
     serial_write_string("[BGA] Done fill test.\n");
 }
 
+void bga_fill_color(uint32_t fb_addr, uint16_t width, uint16_t height, uint16_t color){
+    volatile uint16_t* fb = (volatile uint16_t*)fb_addr;
+    for(int y = 0; y < res_info.y; y++){
+        for(int x = 0; x < res_info.x; x++)
+        {
+            bga_putpixel(x, y, color);
+        }
+    }
+}
+// TODO: remove this function
+void test_color(uint16_t c)
+{
+    bga_fill_color(framebuffer.fb, res_info.x, res_info.y, c);
+}
+
 void bga_test()
 {
     bga_test_fill(framebuffer.fb, res_info.x, res_info.y);
@@ -158,3 +173,33 @@ void bga_putpixel(uint16_t x, uint16_t y, uint16_t color)
     *pixel_loc = color; 
     return;
 }
+/*
+extern 
+void fb_draw_char(
+    uint16_t x,
+    uint16_t y,
+    char c,
+    uint16_t fg,
+    uint16_t bg
+) {
+    if ((unsigned char)c < font_8x8_ascii.first_char ||
+        (unsigned char)c > font_8x8_ascii.last_char) {
+        c = '?';
+    }
+
+    uint32_t glyph_index =
+        (unsigned char)c * font_8x8.height;
+
+    const uint8_t *glyph =
+        &font_8x8.data[glyph_index];
+
+    for (uint8_t row = 0; row < font_8x8.height; row++) {
+        uint8_t bits = glyph[row];
+        for (uint8_t col = 0; col < font_8x8.width; col++) {
+            uint16_t color =
+                (bits & (1 << (7 - col))) ? fg : bg;
+            bga_putpixel(x + col, y + row, color);
+        }
+    }
+}
+    */
