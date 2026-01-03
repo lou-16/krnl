@@ -41,7 +41,7 @@ void kernel_main(uint32_t magic, multiboot_info_t* mbi){
     uint16_t color = 0x7bef;
 
     while(1){
-        //color = (color == 0x7bef? 0x001f : 0x7bef);
+        color = (color == 0x7bef? 0x001f : 0x7bef);
         test_color(color);
     }
 }

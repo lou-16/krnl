@@ -147,7 +147,7 @@ void* kcreate_memmap(){
 #define MEM_START 0x01000000
 
 
-// cast to mem_loc_t, will only be called by kmalloc, so we set the in use flag here [TODO] fix
+// cast to mem_loc_t, will only be called by kmalloc, so we set the in-use flag here [TODO] fix
 void* find_first_page_free()
 {
     for(size_t i = MEM_START; i < m->max_usable_mem_size; i++)

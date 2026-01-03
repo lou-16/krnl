@@ -6,3 +6,6 @@
 krnl.iso
 
 temp/
+qemu.log 
+dockerfile
+/scripts
