@@ -5,11 +5,17 @@
 #include "interrupts.h"
 #include "../drivers/vga/BGA.h"
 #include "../drivers/pit/pit.h"
+#include "args.h"
 //#include "../drivers/ps2/keyboard.h"
 // drivers
 
+extern struct __boot_args__* boot_args;
+
 
 void kernel_main(uint32_t magic, multiboot_info_t* mbi){
+
+
+    boot_args = parse_boot_args((uint32_t*)mbi->cmdline);
 
     serial_init();
     if( magic != MULTIBOOT_BOOTLOADER_MAGIC) {
