@@ -1,7 +1,0 @@
-set(DRIVER_SRC 
-    ${CMAKE_CURRENT_SOURCE_DIR}/pic/pic.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/ps2/keyboard.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/vga/BGA.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/pit/pit.c
-    PARENT_SCOPE
-)

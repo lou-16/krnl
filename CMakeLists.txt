@@ -12,9 +12,8 @@ enable_language(ASM_NASM)
 # Define objcopy explicitly if it's not set
 find_program(CMAKE_OBJCOPY objcopy REQUIRED)
 
-add_subdirectory(boot)
 add_subdirectory(kernel)
-add_subdirectory(drivers)
+
 
 add_executable(kernel.elf ${BOOT_SRC} ${KERNEL_SRC} ${DRIVER_SRC})
 set_target_properties(kernel.elf PROPERTIES LINKER_LANGUAGE C)
