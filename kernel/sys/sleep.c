@@ -1,4 +1,4 @@
-#include "../kernel/sys/sleep.h"
+#include "sys/sleep.h"
 
 int sys_sleep(uint32_t ms)
 {
