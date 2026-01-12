@@ -12,12 +12,13 @@ isr_stub_%+%1:
     push %1
     jmp common_handler
 %endmacro
+%macro isr_common_stub 1
 
 ; EFLAGS, CS, EIP, errorCode.
 common_handler:
     ;lets push all the regs that we need.
     ;EAX, ECX, EDX,EBX, ESP (the value prior to executing the PUSHA instruction), EBP, ESI, and EDI
-    pusha
+    pushad
     push ds      ; ds
     push es      ; es
     push fs     ; fs
@@ -76,7 +77,7 @@ isr_no_err_stub 29
 isr_err_stub    30
 isr_no_err_stub 31
 
-isr_no_err_stub 32
+; 32
 
 global isr_stub_table
 isr_stub_table:

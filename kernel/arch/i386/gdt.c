@@ -1,6 +1,6 @@
 #include "gdt.h"
 #include "serial.h"
-
+#include "kprintf.h"
 //3 entries, null, code & data
 
 static struct gdt_entry gdt[4];
@@ -43,11 +43,11 @@ void gdt_install() {
     gdt_set_entry(0,0,0,0,0);
     gdt_set_entry(1, 0, 0xFFFFFFFF, 0x9a, 0xcf); //code seg
     gdt_set_entry(2, 0, 0xFFFFFFFF, 0x92, 0xcf); // data seg
-    gdt_set_entry(3, (uint32_t) &tss, sizeof(tss) - 1, 0x89, 0x00); // TSS
+    gdt_set_entry(3, (uint32_t)  &tss, sizeof(tss) - 1, 0x89, 0x00); // TSS
     gdt_flush((uint32_t) &gp);
 
     gdt_load_tr((uint16_t) TSS_SELECTOR);
-    serial_write_string("[+] GDT set up\n");
+    kprintf("[+] GDT set up\n");
 }
 
 int check_protected_mode() {

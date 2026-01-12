@@ -6,8 +6,8 @@
 
 #include "serial.h"
 
-#include "../drivers/pic/pic.h"
-#include "../drivers/pit/pit.h"
+#include "drivers/pic/pic.h"
+#include "drivers/pit/pit.h"
 /**
  * :: offset : 32 bit valiue, address of the entry point of the ISR;
  * :: segment selector that must point to a valid code segment in the GDT (update with what segment selector is, the gdt

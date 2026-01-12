@@ -4,4 +4,5 @@ set(KERNEL_SRC ${KERNEL_SRC}
     ${CMAKE_CURRENT_SOURCE_DIR}/interrupts.c
     ${CMAKE_CURRENT_SOURCE_DIR}/gdt.asm
     ${CMAKE_CURRENT_SOURCE_DIR}/exceptions.asm
+    PARENT_SCOPE
 )

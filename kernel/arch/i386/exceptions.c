@@ -1,6 +1,6 @@
 #include "serial.h"
 #include <stdint.h>
-#include "../drivers/pit/pit.h"
+#include "drivers/pit/pit.h"
 
 /* Order of the items on the stack:
     EFLAGS
@@ -36,8 +36,8 @@ struct regs {
     uint32_t EDX;
     uint32_t ECX;
     uint32_t EAX;
-    uint32_t ERRCODE;
     uint32_t EXCEPTNUM;
+    uint32_t ERRCODE;
     uint32_t EIP;
     uint32_t CS;
     uint32_t EFLAGS;
@@ -90,6 +90,6 @@ void __attribute__((__cdecl__)) exception_handler(struct regs* registers)
 
 //    serial_write_string("\nSystem halted.\n");
 
-//    for (;;)
-//      __asm__ volatile ("hlt");
+    for (;;)
+      __asm__ volatile ("hlt");
 }

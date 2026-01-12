@@ -35,6 +35,7 @@ struct tss32 {
     uint16_t trap;
     uint16_t iomap_base;
 } __attribute__((packed));
+
 void gdt_install();
 void tss_init();
 int check_protected_mode();
