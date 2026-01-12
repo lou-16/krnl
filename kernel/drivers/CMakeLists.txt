@@ -1,7 +1,9 @@
-set(DRIVER_SRC 
-    ${CMAKE_CURRENT_SOURCE_DIR}/pic/pic.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/ps2/keyboard.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/vga/BGA.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/pit/pit.c
-    PARENT_SCOPE
-)
+#add_subdirectory(bga)
+add_subdirectory(vga)
+add_subdirectory(ps2)
+add_subdirectory(pic)
+add_subdirectory(pit)
+add_subdirectory(gpu)
+
+set(DRIVER_SRC ${DRIVER_SRC} PARENT_SCOPE)
+
