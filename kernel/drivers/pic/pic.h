@@ -1,7 +1,7 @@
 #ifndef PIC_H
 #define PIC_H
 
-#include "../../kernel/io.h"
+#include "io.h"
 
 #define PIC_MASTER 0x0020 
 #define PIC_SLAVE 0x00A0

@@ -1,6 +1,6 @@
 #include "pic.h"
-#include "../ps2/keyboard.h"
-#include "../pit/pit.h"
+#include "drivers/ps2/keyboard.h"
+#include "drivers/pit/pit.h"
 void eoi(uint8_t irq) 
 {	
 	if (irq > 8)

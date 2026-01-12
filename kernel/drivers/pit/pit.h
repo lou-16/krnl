@@ -2,8 +2,8 @@
 #define CLK
 
 #include <stdint.h>
-#include "../../kernel/io.h"
-#include "../../kernel/interrupts.h"
+#include "io.h"
+#include "arch/i386/interrupts.h"
 
 #define PIT_CMD 0x43
 #define PIT_CH0 0x40

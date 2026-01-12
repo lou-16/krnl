@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "../../kernel/io.h"
-#include "../../kernel/serial.h"
+#include "io.h"
+#include "serial.h"
 
 #define VBE_DISPI_IOPORT_INDEX 0x01CE
 #define VBE_DISPI_IOPORT_DATA 0x01CF
@@ -68,7 +68,7 @@ uint32_t bga_get_fb_size();
 // returns the framebuffer location
 uint32_t bga_enable();
 
-void bga_test_fill(uint32_t fb_addr, uint16_t width, uint16_t height);
+void bga_test_fill(uint16_t width, uint16_t height);
 
 void bga_test();
 

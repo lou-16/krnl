@@ -10,30 +10,30 @@ void enable_keyboard()
     wait_input_empty();
     outb(PS2_DATA_PORT, SCANCODE_SET_1);
 
-    wait_output_full();
+   // wait_output_full();
     uint8_t resp = inb(PS2_DATA_PORT);
     if (resp == RESP_RESEND) {
         serial_write_string("[keyboard.h] Resend requested, retrying set scancode.\n");
         outb(PS2_DATA_PORT, CMD_SET_SCANCODE);
-        wait_input_empty();
+        //wait_input_empty();
         outb(PS2_DATA_PORT, SCANCODE_SET_1);
     }
 
-    wait_output_full();
+   // wait_output_full();
     resp = inb(PS2_DATA_PORT);
     if (resp != RESP_ACK)
         serial_write_string("[keyboard.h] Warning: no ACK for scancode set.\n");
 
     // Enable scanning
     serial_write_string("[keyboard.h] Enabling keyboard scanning...\n");
-    wait_input_empty();
+   // wait_input_empty();
     outb(PS2_DATA_PORT, CMD_ENABLE_SCAN);
 
-    wait_output_full();
+    //wait_output_full();
     resp = inb(PS2_DATA_PORT);
     if (resp == RESP_RESEND) {
         outb(PS2_DATA_PORT, CMD_ENABLE_SCAN);
-        wait_output_full();
+        //wait_output_full();
         resp = inb(PS2_DATA_PORT);
     }
 
@@ -45,6 +45,9 @@ void enable_keyboard()
 void kbd_isr()
 {
     uint8_t code = inb(KBD_DATA_PORT);
+    serial_write_string(code);
+    /*
+    
     bool released = code & 0x80; // mask the last 7 bits 0x80 = 1000 0000
     code &= 0x7F; // mask the first bit 0x7F = 0111 1111
     kbd_event_t ev = {code, !released};
@@ -56,6 +59,7 @@ void kbd_isr()
         kbd_buf.kbuf[kbd_buf.head] = ev;
         kbd_buf.head  = next;
     }
+    */
 }
 
 kbd_event_t kbd_read_event() {

@@ -1,6 +1,6 @@
 #include "BGA.h"
 
-#include "../pci/pci.h"
+#include "drivers/pci/pci.h"
 
 framebuffer_t framebuffer;
 
@@ -126,25 +126,7 @@ uint32_t bga_enable()
     return bga_get_lfb_loc();
 }
 
-void bga_test_fill(uint32_t fb_addr, uint16_t width, uint16_t height)
-{
-    volatile uint16_t* fb = (volatile uint16_t*)fb_addr;
-
-    serial_write_string("\n[BGA] Filling screen...\n");
-
-    for (int y = 0; y < res_info.y; y++) {
-        for (int x = 0; x < res_info.x; x++) {
-            uint16_t color = RGB565(0, 0, 31);
-            bga_putpixel(x, y, color);
-        }
-    }
-    serial_write_string("[BGA] Framebuffer color test done\n");
-
-    serial_write_string("[BGA] Done fill test.\n");
-}
-
-void bga_fill_color(uint32_t fb_addr, uint16_t width, uint16_t height, uint16_t color){
-    volatile uint16_t* fb = (volatile uint16_t*)fb_addr;
+void bga_fill_color(uint16_t width, uint16_t height, uint16_t color){
     for(int y = 0; y < res_info.y; y++){
         for(int x = 0; x < res_info.x; x++)
         {
@@ -155,12 +137,7 @@ void bga_fill_color(uint32_t fb_addr, uint16_t width, uint16_t height, uint16_t 
 // TODO: remove this function
 void test_color(uint16_t c)
 {
-    bga_fill_color(framebuffer.fb, res_info.x, res_info.y, c);
-}
-
-void bga_test()
-{
-    bga_test_fill(framebuffer.fb, res_info.x, res_info.y);
+    bga_fill_color(res_info.x, res_info.y, RGB565(0,0,31));
 }
 
 void bga_putpixel(uint16_t x, uint16_t y, uint16_t color)
