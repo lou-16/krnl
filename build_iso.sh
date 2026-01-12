@@ -60,7 +60,7 @@ set timeout=-1
 set default=0
 
 menuentry "krnl - lou-16's Kernel" {
-    multiboot /boot/$KERNEL_ELF_NAME
+    multiboot /boot/$KERNEL_ELF_NAME 
     boot
 }
 EOF
