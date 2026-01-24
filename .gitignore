@@ -10,3 +10,4 @@ qemu.log
 dockerfile
 /scripts
 Limine/
+limine.iso
