@@ -1,4 +1,0 @@
-set(DRIVER_SRC ${DRIVER_SRC}
-    ${CMAKE_CURRENT_SOURCE_DIR}/gpu.c
-    PARENT_SCOPE    
-)

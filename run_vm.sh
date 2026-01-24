@@ -9,7 +9,7 @@ if [[ "$1" == "--debug" || "$2" == "--debug" ]]; then
     DEBUG_GDB_CONN_ENABLE="-S -s"
 fi
 
-if [[ "$1" == "--enable-bootloader" || "$2" == "--enable-bootloader" ]]; then
+if [[ "$1" == "--enable-grub" || "$2" == "--enable-grub" ]]; then
     BOOT="-cdrom krnl.iso"
 fi
 

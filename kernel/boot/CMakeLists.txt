@@ -1,1 +1,1 @@
-set(BOOT_SRC ${CMAKE_CURRENT_SOURCE_DIR}/boot.asm PARENT_SCOPE)
+target_sources(kernel_objs PRIVATE boot.asm)

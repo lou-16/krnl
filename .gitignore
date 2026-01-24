@@ -9,3 +9,4 @@ temp/
 qemu.log 
 dockerfile
 /scripts
+Limine/

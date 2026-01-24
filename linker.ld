@@ -1,17 +1,22 @@
+OUTPUT_FORMAT(elf64-x86-64)
 ENTRY(_start)
 
 SECTIONS {
-    . = 1M;
+    . = 0xffffffff80000000;
 
-    .text : {
-        *(.multiboot)
-        *(.text*)
+    .text : ALIGN(4K) {
+        *(.text* .text.*)
     }
 
-    .rodata :   { *(.rodata*) }
-    .data : { *(.data*) }
-    .bss : {
-        *(.bss*)
+    .rodata : ALIGN(4K)  { 
+        *(.rodata* .rodata.*) 
+    }
+
+    .data : ALIGN(4K) { 
+            *(.data* .data.*) 
+    }
+    .bss : ALIGN(4K) {
+        *(.bss* .bss.*)
         *(COMMON)
     } 
 }
