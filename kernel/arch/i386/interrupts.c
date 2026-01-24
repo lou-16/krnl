@@ -1,4 +1,5 @@
 #include "interrupts.h"
+#include "drivers/pic/pic.h"
 
 idt_entry_t idt[256];
 
@@ -22,11 +23,17 @@ void set_idt_gate(int idx, void* offset, uint16_t selector, uint8_t type_attr) {
 
 void setup_exceptions() {
     // move master and slave PICs so that my ints and cpu ints do not overlap
-
+    PIC_remap(0x20, 0x28);
     for(int i = 0; i < 32; i++) {
         set_idt_gate(i, isr_stub_table[i], 0x08, 0x8e);
     }
-    serial_write_string("\n[CPU IRQ] set up the stubs for CPU faults.\n[TODO] implement proper ISRs\n");
+    
+    //set_idt_gate(32, irq_stub_table[0],0x08, 0x8e);
+    //set_idt_gate(33, irq_stub_table[1], 0x08, 0x8e);
+}
+
+static inline void read_idtr(idt_ptr_t *idtr) {
+    asm volatile ("sidt %0" : "=m"(*idtr));
 }
 
 void load_idt() {
@@ -35,25 +42,28 @@ void load_idt() {
     ptr.limit = sizeof(idt) - 1; // 255
     ptr.base = (uint32_t)&idt;
 
-
-
-    //init PIC from 0x20 and second at 0x28
-    PIC_remap(0x20, 0x28);
-    serial_write_string("pic remapped\n");
-    
-    
-    
-    PIC_unmask_master(0x32); // enable PIT
-    pit_init((uint32_t)100);
-    serial_write_string("pit enabled\n");
-    PIC_unmask_master(0x33); // enable keyboard
-    serial_write_string("keyboard enabled\n");
-    
-    serial_write_string("pit initiated with freq 100Hz");
-
     //load that into idtr (idt register )
     asm volatile ("lidt %0" : : "m"(ptr));
     serial_write_string("\nload_idt\n");
+    idt_ptr_t idtr_debug;
+    read_idtr(&idtr_debug);
+    serial_write_string("idtr values\n");
+    serial_write_hex32(idtr_debug.base);
+    serial_write_string("\n");
+    serial_write_hex32(idtr_debug.limit);
+    //init PIC from 0x20 and second at 0x28
+    
+    uint32_t freq = 100;
+    pit_init(freq);
+    PIC_unmask_master((uint8_t)32); // enable PIT
+    //set_idt_gate(32, (void*)isr_stub_table[32],0x08, 0x8e);
+    serial_write_string("pit enabled\n");
+    //PIC_unmask_master((uint8_t)33); // enable keyboard
+    //serial_write_string("keyboard enabled\n");
+    
+    serial_write_string("pit initiated with freq: ");
+    serial_write_dec(freq);
+    serial_write_string("\n");
     asm volatile ("sti");
     //sti();
 }

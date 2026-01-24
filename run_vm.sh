@@ -1,15 +1,20 @@
 #!/bin/bash
 
-DEBUG=""
 DEBUG_LOG_FLAGS=""
 DEBUG_GDB_CONN_ENABLE=""
+BOOT="-kernel build/kernel.elf"
 
-if [[ $1 == "--debug" ]]; then
+if [[ "$1" == "--debug" || "$2" == "--debug" ]]; then
     DEBUG_LOG_FLAGS="-d int,cpu_reset"
     DEBUG_GDB_CONN_ENABLE="-S -s"
 fi
+
+if [[ "$1" == "--enable-bootloader" || "$2" == "--enable-bootloader" ]]; then
+    BOOT="-cdrom krnl.iso"
+fi
+
 qemu-system-i386 \
-    -cdrom krnl.iso \
+    $BOOT \
     -serial stdio \
     $DEBUG_LOG_FLAGS -D qemu.log \
-    $DEBUG_GDB_CONN_ENABLE \
+    $DEBUG_GDB_CONN_ENABLE

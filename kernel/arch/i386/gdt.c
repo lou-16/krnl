@@ -12,7 +12,7 @@ extern void gdt_flush(uint32_t);
 extern void gdt_load_tr(uint16_t);
 
 static struct tss32 tss;
-
+extern uint8_t check_paging(void);
 void tss_init() 
 {
     for(uint32_t i = 0;i < sizeof(tss); i++)
@@ -35,6 +35,7 @@ static void gdt_set_entry (int idx, uint32_t base, uint32_t limit, uint8_t acces
 #define TSS_SELECTOR (3 << 3)
 
 void gdt_install() {
+    check_paging_enabled();
     gp.limit = sizeof(gdt) - 1;
     gp.base = (uint32_t)&gdt;
 
@@ -59,4 +60,15 @@ int check_protected_mode() {
     return 1;
 }
 
+
+int check_paging_enabled()
+{
+    if(check_paging())
+    {
+        kprintf("paging enabled\n");
+        return 1;
+    }
+    kprintf("paging disabled\n");
+    return 0;
+}
 

@@ -1,4 +1,5 @@
 extern exception_handler
+extern isr_handler_c
 
 %macro isr_err_stub 1
 isr_stub_%+%1:
@@ -12,13 +13,35 @@ isr_stub_%+%1:
     push %1
     jmp common_handler
 %endmacro
-%macro isr_common_stub 1
+
+%macro irq_common_stub 1
+irq_common_stub%+%1:
+    pusha
+    push ds
+    push es
+    push fs 
+    push gs
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    push %1
+    call isr_handler_c
+    add esp, 4
+    pop gs
+    pop fs
+    pop es
+    pop ds
+    popa
+    iretd
+%endmacro
 
 ; EFLAGS, CS, EIP, errorCode.
 common_handler:
     ;lets push all the regs that we need.
     ;EAX, ECX, EDX,EBX, ESP (the value prior to executing the PUSHA instruction), EBP, ESI, and EDI
-    pushad
+    pusha
     push ds      ; ds
     push es      ; es
     push fs     ; fs
@@ -29,7 +52,7 @@ common_handler:
     mov es, ax
     mov fs, ax
     mov gs, ax
-    mov ss, ax 
+    ;mov ss, ax 
 
     push esp
     call exception_handler
@@ -44,6 +67,8 @@ common_handler:
     add esp, 8
     iretd
 
+global isr_stub_table
+isr_stub_table:
 isr_no_err_stub 0
 isr_no_err_stub 1
 isr_no_err_stub 2
@@ -77,14 +102,9 @@ isr_no_err_stub 29
 isr_err_stub    30
 isr_no_err_stub 31
 
-; 32
+irq_common_stub 32
+irq_common_stub 33
 
-global isr_stub_table
-isr_stub_table:
-%assign i 0 
-%rep    32
-    dd isr_stub_%+i ; use DQ instead if targeting 64-bit
-%assign i i+1
-
-%endrep
-
+global enable_interrupts
+enable_interrupts:
+    sti

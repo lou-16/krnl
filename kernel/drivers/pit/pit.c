@@ -1,5 +1,5 @@
 #include "pit.h"
-
+#include "kprintf.h"
 void pit_init(uint32_t frequency)
 {
     uint32_t divisor = PIT_DIVISOR(frequency);
@@ -14,10 +14,5 @@ volatile uint8_t redraw = 0;
 void pit_handler()
 {
     CountDown++;
-    if(CountDown % 1000000 == 0){
-        redraw = 1;
-    } else {
-        redraw = 0;
-    }
-    eoi(0);
+    kprintf("%d", CountDown);
 }

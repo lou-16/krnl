@@ -5,20 +5,20 @@
 
 #define VGA_MEMORY ((volatile uint16_t*)0xB8000)
 
-static uint16_t* const vga_buffer = VGA_MEMORY;
+static volatile uint16_t* const vga_buffer = VGA_MEMORY;
 static uint8_t cursor_x = 0;
 static uint8_t cursor_y = 0;
 
-typedef struct TimeStamp {
-    uint8_t t_Hour;
-    uint8_t t_Min;
-    void (*modifyTimeStamp)(struct TimeStamp_t*);
-}TimeStamp_t;
-
-void modifyTimeStamp()
-{
-
-}
+//typedef struct TimeStamp {
+//    uint8_t t_Hour;
+//    uint8_t t_Min;
+//    void (*modifyTimeStamp)(struct TimeStamp_t*);
+//}TimeStamp_t;
+//
+//void modifyTimeStamp()
+//{
+//
+//}
 
 /* Light grey on black */
 static uint8_t vga_color = 0x07;
@@ -81,3 +81,5 @@ void vga_clear(void)
     cursor_x = 0;
     cursor_y = 0;
 }
+
+void vgaInit() { vga_clear(); }

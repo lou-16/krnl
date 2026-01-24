@@ -1,5 +1,5 @@
 #include "keyboard.h"
-
+#include "arch/i386/interrupts.h"
 void enable_keyboard()
 {
     serial_write_string("[keyboard.h] Setting scan code set 1...\n");
@@ -41,25 +41,25 @@ void enable_keyboard()
         serial_write_string("[keyboard.h] Scanning enabled successfully.\n");
     else
         serial_write_string("[keyboard.h] Failed to enable scanning.\n");
+
+    //serial_write_string("[keyboard.h] Adding kbd_isr to the ISR list\n");
+    //set_idt_gate(33, (void*)(kbd_isr),0x08, 0x8e);
 }
 void kbd_isr()
 {
     uint8_t code = inb(KBD_DATA_PORT);
-    serial_write_string(code);
-    /*
-    
     bool released = code & 0x80; // mask the last 7 bits 0x80 = 1000 0000
     code &= 0x7F; // mask the first bit 0x7F = 0111 1111
-    kbd_event_t ev = {code, !released};
-    uint8_t next  = (kbd_buf.head + 1) % (KBD_BUF_SIZE);
-
+    //kbd_event_t ev = {code, !released};
+    //uint8_t next  = (kbd_buf.head + 1) % (KBD_BUF_SIZE);
+    serial_write_char(scancode_ascii[code]);
     // if next is not equal to tail, as what may happen if tail = 128, then we set the head. to rotate queue
-    if(next != kbd_buf.tail)
-    {
-        kbd_buf.kbuf[kbd_buf.head] = ev;
-        kbd_buf.head  = next;
-    }
-    */
+    //if(next != kbd_buf.tail)
+    //{
+    //    kbd_buf.kbuf[kbd_buf.head] = ev;
+    //    kbd_buf.head  = next;
+    //}
+    
 }
 
 kbd_event_t kbd_read_event() {
@@ -67,10 +67,10 @@ kbd_event_t kbd_read_event() {
     if (kbd_buf.head == kbd_buf.tail)
         return ev; // empty event (no data)
 
-    cli(); // disable interrupts to prevent race
+//    cli(); // disable interrupts to prevent race
     ev = kbd_buf.kbuf[kbd_buf.tail];
     kbd_buf.tail = (kbd_buf.tail + 1) % KBD_BUF_SIZE;
-    sti();
+//    sti();
 
     return ev;
 }

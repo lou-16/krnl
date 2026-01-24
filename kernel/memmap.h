@@ -103,17 +103,17 @@ typedef struct {
 
 
 // Get the bit at index x (0..4095)
-static inline bool get_bit(const uint8_t bitmap[BITMAP_SIZE], int x) {
+static inline bool mget_bit(const uint8_t bitmap[BITMAP_SIZE], int x) {
     return (bitmap[x / 8] >> (x % 8)) & 1U;
 }
 
 // Set the bit at index x (0..4095)
-static inline void set_bit(uint8_t bitmap[BITMAP_SIZE], int x) {
+static inline void mset_bit(uint8_t bitmap[BITMAP_SIZE], int x) {
     bitmap[x / 8] |= (1U << (x % 8));
 }
 
 // Clear the bit at index x (0..4095)
-static inline void clear_bit(uint8_t bitmap[BITMAP_SIZE], int x) {
+static inline void mclear_bit(uint8_t bitmap[BITMAP_SIZE], int x) {
     bitmap[x / 8] &= ~(1U << (x % 8));
 }
 
@@ -163,7 +163,7 @@ void* find_first_page_free()
     for(size_t i = MEM_START; i < m->max_usable_mem_size; i++)
     {
         // if first bit is set to 0 (not in use)
-        if(get_bit((m->mem_block_array[i]).used_bytes, 0) == 0){
+        if(mget_bit((m->mem_block_array[i]).used_bytes, 0) == 0){
             m->mem_block_array[i].use = true;
             return (void*)m->mem_block_array[i].p;
         }

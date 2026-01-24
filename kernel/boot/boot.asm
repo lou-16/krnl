@@ -25,7 +25,7 @@ _start:
     
     push ebx
     push eax
-    
+    ; TODO: implement a custom bootloader structure.
     call kernel_main
     cli 
 

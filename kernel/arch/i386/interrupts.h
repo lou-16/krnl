@@ -30,6 +30,7 @@ void setas_trap_gate(idt_entry_t* idt_entry);
 
 extern idt_entry_t idt[256];
 extern void (*isr_stub_table[256])();
+//extern void (*irq_stub_table[2])();
 
 void set_idt_gate(int idx, void* offset, uint16_t selector, uint8_t type_attr);
 
@@ -45,5 +46,6 @@ typedef struct {
 } __attribute__((packed)) idt_ptr_t;
 
 void load_idt();
+
 
 #endif

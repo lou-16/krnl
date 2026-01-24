@@ -6,7 +6,7 @@
 //#include "drivers/bga/BGA.h"
 #include "drivers/gpu/gpu.h"
 #include "drivers/pit/pit.h"
-//#include "drivers/ps2/keyboard.h"
+#include "drivers/ps2/keyboard.h"
 
 #include "arch/i386/interrupts.h"
 #include "arch/i386/gdt.h"
@@ -18,31 +18,31 @@ void kernel_main(uint32_t magic, multiboot_info_t* mbi){
     //boot_args = parse_boot_args((uint32_t*)mbi->cmdline);
 
     serial_init();
+    vgaInit();
     if( magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         kprintf("Invalid multiboot magic");
         return;
     }
 
-    dump_memory_map(mbi);
+    //dump_memory_map(mbi);
 
     gdt_install();
     if(check_protected_mode() == 0){
         kprintf("protected mode active\n");
     };
-    asm volatile("cli");
     setup_exceptions();
     load_idt();
-    enable_keyboard();
-    asm volatile("sti");
-
+    //enable_keyboard();
+    //enable_interrupts();
 
     kcreate_memmap();
     //install_irq_handlers();
     //test output
     kprintf("Hello from Krnl\n");
-
-    fb_fill_color(800, 600, 0x1234);
-
+    
+    while(1)
+    {
+    };
 }
 
 /*

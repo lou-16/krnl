@@ -5,5 +5,5 @@
 
 void vga_putchar(char c);
 void vga_clear(void);
-
+void vgaInit();
 #endif

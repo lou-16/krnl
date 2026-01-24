@@ -1,6 +1,7 @@
 #include "pic.h"
 #include "drivers/ps2/keyboard.h"
 #include "drivers/pit/pit.h"
+#include "kprintf.h"
 void eoi(uint8_t irq) 
 {	
 	if (irq > 8)
@@ -35,8 +36,8 @@ void PIC_remap(uint16_t offset1, uint16_t offset2)
 	io_wait();
 
 	// Unmask both PICs.
-	outb(PIC1_DATA, 0);
-	outb(PIC2_DATA, 0);
+	outb(PIC1_DATA, 0xff);
+	outb(PIC2_DATA, 0xff);
 }
 
 void PIC_unmask_master(uint8_t irq)
@@ -46,27 +47,18 @@ void PIC_unmask_master(uint8_t irq)
 	outb(0x21, mask);
 }
 
-uint32_t isr_handler_c(uint16_t int_no)
+
+void isr_handler_c(uint32_t int_no)
 {
     switch (int_no){
     case 32: 
         pit_handler();
         break;
-        
     case 33:
         kbd_isr();
 		break;
 	default:
 		break;
 	}
-	
-    if (int_no >= 40)
-    {
-		outb(0xA0, 0x20);  // Slave PIC
-	}
-	if (int_no >= 32){
-		outb(0x20, 0x20); 
-
-	}
-	return 0;
+    eoi(int_no - 32);
 }

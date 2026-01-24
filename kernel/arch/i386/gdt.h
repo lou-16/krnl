@@ -39,5 +39,7 @@ struct tss32 {
 void gdt_install();
 void tss_init();
 int check_protected_mode();
+extern uint8_t check_paging(void);
+int check_paging_enabled();
 
 #endif
