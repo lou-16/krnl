@@ -1,24 +1,27 @@
 cmake_minimum_required(VERSION 3.16)
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+set(CMAKE_SYSTEM_PROCESSOR x86_64)
 project(krnl C ASM)
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_FLAGS "-ffreestanding -nostdlib -fno-pic -fno-omit-frame-pointer -fno-pie -g -O0 -mno-red-zone -mcmodel=kernel -nostartfiles -nodefaultlibs -fno-stack-protector")
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf64)
+set(CMAKE_C_COMPILER_TARGET x86_64-elf)
+set(CMAKE_ASM_COMPILER_TARGET x86_64-elf)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE OFF)
 
 enable_language(ASM_NASM)
 
 # Apple Specific Build.
-if(APPLE)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     message(STATUS "Configuring macOS Host")
     find_program(LLD ld.lld REQUIRED)
-    set(CMAKE_LINKER ${LLD})
+    set(CMAKE_LINKER ld.lld)
     set(CMAKE_OSX_ARCHITECTURES "")
     # TODO: Modify this for OSX
-    #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-integrated-as --target=i686-elf")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} Wl,-T,${CMAKE_CURRENT_SOURCE_DIR}/linker.ld")
 endif()
 
 # Define objcopy explicitly if it's not set
@@ -27,9 +30,6 @@ if(NOT APPLE)
 endif()
 
 add_executable(kernel.elf)
-set_target_properties(kernel.elf PROPERTIES LINKER_LANGUAGE C
-    LINK_FLAGS "-T ${CMAKE_SOURCE_DIR}/linker.ld -nostdlib -nostartfiles -nodefaultlibs -no-pie"
-)
 
 add_library(kernel_objs OBJECT)
 add_subdirectory(kernel)
@@ -37,6 +37,7 @@ add_subdirectory(kernel)
 target_include_directories(kernel.elf PRIVATE kernel/)
 
 target_link_libraries(kernel.elf PRIVATE kernel_objs)
+
 
 if(NOT APPLE)
 add_custom_command(
