@@ -1,0 +1,11 @@
+-e [1;36m[[1m+[0m[1;36m] Cleaning previous build...[0m
+-e [1;36m[[1m+[0m[1;36m] Creating build directory...[0m
+-e [1;36m[[1m+[0m[1;36m] Running CMake...[0m
+-- The C compiler identification is Clang 21.0.0
+-- The ASM compiler identification is AppleClang
+-- Found assembler: /usr/bin/clang
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - failed
+-- Check for working C compiler: /usr/bin/clang
+-- Check for working C compiler: /usr/bin/clang - broken
+-- Configuring incomplete, errors occurred!

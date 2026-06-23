@@ -34,7 +34,7 @@ int dump_memory_map(multiboot_info_t* mb) {
         return 1;
     }
 
-    multiboot_memory_map_t* mmap = (void*)mb->mmap_addr;
+    multiboot_memory_map_t* mmap = (multiboot_memory_map_t*)(mb->mmap_addr);
     int index = 0;
 
 
