@@ -39,6 +39,27 @@ void PIC_remap(uint16_t offset1, uint16_t offset2)
 	outb(PIC2_DATA, 0);
 }
 
+void get_current_PIC_state(int pic_number) {
+	serial_write_string("pic number is");
+	serial_write_dec(pic_number);
+	serial_write_string("\n");
+	if(pic_number == 1) {
+		uint8_t val = inb(PIC2_DATA);
+		serial_write_string("val: ");
+		serial_write_uint8_bin(val);
+		serial_write_string("\n");
+	}
+	if( pic_number == 0) {
+		uint8_t val = inb(PIC1_DATA);
+		serial_write_string("val: ");
+		serial_write_uint8_bin(val);
+		serial_write_string("\n");
+	}
+	else {
+		serial_write_string("invalid input to pic state");
+	}
+} 
+
 void PIC_unmask_master(uint8_t irq)
 {
 	uint8_t mask = inb(0x21);
@@ -48,6 +69,7 @@ void PIC_unmask_master(uint8_t irq)
 
 uint32_t isr_handler_c(uint16_t int_no)
 {
+	serial_write_string("h\n");
     switch (int_no){
     case 32: 
         pit_handler();
@@ -60,13 +82,11 @@ uint32_t isr_handler_c(uint16_t int_no)
 		break;
 	}
 	
-    if (int_no >= 40)
-    {
+    if (int_no >= 40)    
 		outb(0xA0, 0x20);  // Slave PIC
-	}
-	if (int_no >= 32){
-		outb(0x20, 0x20); 
+	
+	outb(0x20, 0x20); 
 
-	}
+
 	return 0;
 }

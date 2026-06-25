@@ -39,8 +39,10 @@ void PIC_remap(uint16_t	 offset1, uint16_t offset2);
 
 void PIC_unmask_master(uint8_t irq);
 
+void get_current_PIC_state(int pic_number);
+
 #define PIC_EOI 0x20
 //end of interrupt 
 void eoi(uint8_t irq);
-
+uint32_t isr_handler_c(uint16_t);
 #endif

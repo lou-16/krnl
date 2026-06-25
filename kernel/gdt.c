@@ -15,9 +15,9 @@ static struct tss32 tss;
 
 void tss_init() 
 {
-    for(uint32_t i = 0;i < sizeof(tss); i++)
+    for(size_t i = 0;i < sizeof(tss); i++)
     {
-        *((uint32_t*)(&tss) + i) = 0;
+        *((uint8_t*)(&tss) + i) = 0;
     }
     tss.iomap_base = sizeof(struct tss32);
 }

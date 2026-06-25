@@ -36,5 +36,6 @@ static inline void serial_write_string(const char* str) {
 void serial_write_hex32(uint32_t val);
 void serial_write_hex64(uint64_t val);
 void serial_write_dec(uint64_t val);
+void serial_write_uint8_bin(uint8_t x);
 
 #endif // SERIAL_H

@@ -128,6 +128,7 @@ uint32_t bga_enable()
 
 void bga_test_fill(uint32_t fb_addr, uint16_t width, uint16_t height)
 {
+    sti();
     volatile uint16_t* fb = (volatile uint16_t*)fb_addr;
 
     serial_write_string("\n[BGA] Filling screen...\n");
@@ -141,6 +142,7 @@ void bga_test_fill(uint32_t fb_addr, uint16_t width, uint16_t height)
     serial_write_string("[BGA] Framebuffer color test done\n");
 
     serial_write_string("[BGA] Done fill test.\n");
+    cli();
 }
 
 void bga_fill_color(uint32_t fb_addr, uint16_t width, uint16_t height, uint16_t color){

@@ -43,6 +43,8 @@ struct regs {
     uint32_t EFLAGS;
 } __attribute__((packed));
 
+static volatile int count = 0;
+
 void __attribute__((__cdecl__)) exception_handler(struct regs* registers) 
 {
 
@@ -90,6 +92,13 @@ void __attribute__((__cdecl__)) exception_handler(struct regs* registers)
 
 //    serial_write_string("\nSystem halted.\n");
 
-//    for (;;)
-//      __asm__ volatile ("hlt");
+    if(count > 2){
+        for (;;) {
+            serial_write_string("a");
+            __asm__ volatile ("hlt");
+        }
+    }
+    else {
+        count++;
+    }
 }

@@ -29,31 +29,25 @@ void setup_exceptions() {
     serial_write_string("\n[CPU IRQ] set up the stubs for CPU faults.\n[TODO] implement proper ISRs\n");
 }
 
+idt_ptr_t ptr;
+
 void load_idt() {
-    //cli();
-    idt_ptr_t ptr;
+    
     ptr.limit = sizeof(idt) - 1; // 255
-    ptr.base = (uint32_t)&idt;
-
-
-
+    ptr.base = (uint32_t)idt;
     //init PIC from 0x20 and second at 0x28
     PIC_remap(0x20, 0x28);
-    serial_write_string("pic remapped\n");
-    
-    
-    
-    PIC_unmask_master(0x32); // enable PIT
+    serial_write_string("pic remapped\n");  
+    set_idt_gate(32, &isr_handler_c, 0x08, 0x8e);
     pit_init((uint32_t)100);
-    serial_write_string("pit enabled\n");
-    PIC_unmask_master(0x33); // enable keyboard
-    serial_write_string("keyboard enabled\n");
-    
-    serial_write_string("pit initiated with freq 100Hz");
+    PIC_unmask_master(0x20); // enable PIT
+
+    set_idt_gate(33, &isr_handler_c, 0x08, 0x8e);
+    PIC_unmask_master(0x21); // enable keyboard
+
 
     //load that into idtr (idt register )
     asm volatile ("lidt %0" : : "m"(ptr));
     serial_write_string("\nload_idt\n");
     asm volatile ("sti");
-    //sti();
 }

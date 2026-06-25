@@ -48,3 +48,9 @@ void serial_write_dec(uint64_t val) {
         }
     }
 }
+
+void serial_write_uint8_bin(uint8_t x)
+{
+    for (int i = 7; i >= 0; --i)
+        serial_write_char(((x >> i) & 1) ? '1' : '0');
+}
