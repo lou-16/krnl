@@ -45,7 +45,7 @@ void enable_keyboard()
 void kbd_isr()
 {
     uint8_t code = inb(KBD_DATA_PORT);
-    serial_write_string(code);
+    serial_write_string((const char*)(&code));
     /*
     
     bool released = code & 0x80; // mask the last 7 bits 0x80 = 1000 0000

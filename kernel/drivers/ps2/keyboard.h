@@ -2,9 +2,9 @@
 #define KEYBOARD_PS2
 #include <stdint.h>
 #include <stdbool.h>
-#include "serial.h"
+#include "../../serial.h"
 #include "sc.h"
-#include "io.h"
+#include "../../io.h"
 
 #define EMPTY (int)0
 //data port 

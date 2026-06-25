@@ -4,7 +4,7 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 project(krnl C ASM)
 
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_FLAGS "--target=i686-elf -ffreestanding -nostdlib -fno-pic -fno-omit-frame-pointer -fno-pie")
+set(CMAKE_C_FLAGS "-ffreestanding -nostdlib -fno-pic -fno-omit-frame-pointer -fno-pie")
 set(CMAKE_ASM_NASM_OBJECT_FORMAT elf32)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE OFF)

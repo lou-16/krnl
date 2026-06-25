@@ -32,7 +32,7 @@ void kernel_main(uint32_t magic, multiboot_info_t* mbi){
     asm volatile("cli");
     setup_exceptions();
     load_idt();
-    enable_keyboard();
+    //enable_keyboard();
     asm volatile("sti");
 
 

@@ -12,7 +12,6 @@ isr_stub_%+%1:
     push %1
     jmp common_handler
 %endmacro
-%macro isr_common_stub 1
 
 ; EFLAGS, CS, EIP, errorCode.
 common_handler:
