@@ -21,39 +21,28 @@ void set_idt_gate(int idx, void* offset, uint16_t selector, uint8_t type_attr) {
 }
 
 void setup_exceptions() {
-    // move master and slave PICs so that my ints and cpu ints do not overlap
-
     for(int i = 0; i < 32; i++) {
         set_idt_gate(i, isr_stub_table[i], 0x08, 0x8e);
     }
-    serial_write_string("\n[CPU IRQ] set up the stubs for CPU faults.\n[TODO] implement proper ISRs\n");
+    
 }
+idt_ptr_t ptr;
+extern void irq0_stub(void);
 
 void load_idt() {
-    //cli();
-    idt_ptr_t ptr;
-    ptr.limit = sizeof(idt) - 1; // 255
+    ptr.limit = sizeof(idt) - 1;
     ptr.base = (uint32_t)&idt;
 
+    setup_exceptions();                          // fill exception gates
+    set_idt_gate(32, &irq0_stub, 0x08, 0x8e); // fill IRQ0 gate
 
+    asm volatile("lidt %0" :: "m"(ptr));         // load IDT FIRST
 
-    //init PIC from 0x20 and second at 0x28
-    PIC_remap(0x20, 0x28);
-    serial_write_string("pic remapped\n");
-    
-    
-    
-    PIC_unmask_master(0x32); // enable PIT
-    pit_init((uint32_t)100);
-    serial_write_string("pit enabled\n");
-    PIC_unmask_master(0x33); // enable keyboard
-    serial_write_string("keyboard enabled\n");
-    
-    serial_write_string("pit initiated with freq 100Hz");
+    PIC_remap(0x20, 0x28);                       // then remap PIC
+    pit_init(100);                               // then init PIT
+    PIC_unmask_master(0);                      // then unmask
+    uint8_t val = inb(0x21);
+    serial_write_hex32(val);
 
-    //load that into idtr (idt register )
-    asm volatile ("lidt %0" : : "m"(ptr));
-    serial_write_string("\nload_idt\n");
-    asm volatile ("sti");
-    //sti();
+    asm volatile("sti");                         // then enable interrupts
 }

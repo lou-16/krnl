@@ -1,7 +1,7 @@
 #ifndef PIC_H
 #define PIC_H
 
-#include "io.h"
+#include "../../io.h"
 
 #define PIC_MASTER 0x0020 
 #define PIC_SLAVE 0x00A0
@@ -42,5 +42,6 @@ void PIC_unmask_master(uint8_t irq);
 #define PIC_EOI 0x20
 //end of interrupt 
 void eoi(uint8_t irq);
+uint32_t isr_handler_c(uint32_t int_no);
 
 #endif

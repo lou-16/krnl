@@ -41,7 +41,7 @@ void kernel_main(uint32_t magic, multiboot_info_t* mbi){
     //test output
     kprintf("Hello from Krnl\n");
 
-    fb_fill_color(800, 600, 0x1234);
+    while(1);
 
 }
 

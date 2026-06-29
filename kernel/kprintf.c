@@ -81,7 +81,7 @@ void kprintf(const char* fmt, ...)
             break;
         }
         case 'd': {
-            int32_t v = va_arg(args, int32_t);
+            uint32_t v = va_arg(args, uint32_t);
             print_int(v);
             break;
         }

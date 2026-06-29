@@ -1,6 +1,6 @@
 #include "gdt.h"
-#include "serial.h"
-#include "kprintf.h"
+#include "../../serial.h"
+#include "../../kprintf.h"
 //3 entries, null, code & data
 
 static struct gdt_entry gdt[4];

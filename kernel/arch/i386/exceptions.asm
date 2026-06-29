@@ -15,32 +15,26 @@ isr_stub_%+%1:
 
 ; EFLAGS, CS, EIP, errorCode.
 common_handler:
-    ;lets push all the regs that we need.
-    ;EAX, ECX, EDX,EBX, ESP (the value prior to executing the PUSHA instruction), EBP, ESI, and EDI
     pushad
-    push ds      ; ds
-    push es      ; es
-    push fs     ; fs
-    push gs      ;gs
-
+    push ds
+    push es
+    push fs
+    push gs
     mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
-    mov ss, ax 
-
+    ; NO mov ss, ax
     push esp
     call exception_handler
     add esp, 4
-
     pop gs
     pop fs
-    pop es 
+    pop es
     pop ds
-    popa 
-    ;pop ; pop the CPU shit  
-    add esp, 8
+    popad
+    add esp, 8    ; discard EXCEPTNUM + ERRCODE
     iretd
 
 isr_no_err_stub 0
