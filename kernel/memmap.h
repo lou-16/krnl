@@ -8,7 +8,7 @@
 #include "serial.h"
 
 #include "sys/abort.h"
-
+#include "kprintf.h"
 #define MAX_MEM_ENTRIES 64
 
 typedef uint32_t mem_loc_t;
@@ -26,48 +26,58 @@ void memset(uint8_t* p, uint32_t l, uint16_t v) {
     return;
 }
 
-int dump_memory_map(multiboot_info_t* mb) {
-    serial_write_string("\n[MEMORY MAP DUMP]\n");
+int dump_memory_map(multiboot_info_t* mb)
+{
+    kprintf("[MEMORY MAP DUMP]\n");
 
-    if (!((mb->flags) & (MULTIBOOT_FLAG_MMAP))) {
-        serial_write_string("No memory map available \n");
+    if (!(mb->flags & MULTIBOOT_FLAG_MMAP)) {
+        kprintf("No memory map available\n");
         return 1;
     }
 
-    multiboot_memory_map_t* mmap = (void*)mb->mmap_addr;
+    multiboot_memory_map_t* mmap =
+        (multiboot_memory_map_t*)(uint32_t)mb->mmap_addr;
+
     int index = 0;
 
+    while ((uint32_t)mmap < (mb->mmap_addr + mb->mmap_length)) {
 
-    while ((uint32_t)mmap < mb->mmap_addr + mb->mmap_length) {
-        serial_write_string("Entry : ");
-        serial_write_dec(index);
-        serial_write_string(":\nBase=");
-        serial_write_hex64(mmap->addr);
-        serial_write_string(" | Size=");
-        serial_write_hex64(mmap->len);
-        serial_write_string(" | Type=");
-        serial_write_dec(mmap->type);
-        serial_write_string("\n");
+        kprintf(
+            "Entry %d:\n"
+            "  Base = 0x%x%x\n"
+            "  Size = 0x%x%x\n"
+            "  Type = %u\n",
+            index,
+            (uint32_t)(mmap->addr >> 32),
+            (uint32_t)(mmap->addr & 0xFFFFFFFF),
+            (uint32_t)(mmap->len >> 32),
+            (uint32_t)(mmap->len & 0xFFFFFFFF),
+            mmap->type
+        );
 
-        if(mmap->len > 0x00400000){
+        if (mmap->len > 0x00400000) {
             kmainmem = mmap;
         }
 
         if (mmap->type == 1 && index < MAX_MEM_ENTRIES) {
             usable_mask |= (1ULL << index);
             base_addrs[index] = mmap->addr;
-            lengths[index] = mmap->len;
+            lengths[index]   = mmap->len;
         }
-        
-        mmap = (multiboot_memory_map_t*)((uint32_t)mmap + mmap->size + 4);
+
+        mmap = (multiboot_memory_map_t*)
+            ((uint32_t)mmap + mmap->size + sizeof(mmap->size));
+
         index++;
     }
-   
-    serial_write_string("\nUsable Mask: ");
-    serial_write_hex64(usable_mask);
-    serial_write_string("\n");
+
+    kprintf("Usable Mask: 0x%x%x\n",
+        (uint32_t)(usable_mask >> 32),
+        (uint32_t)(usable_mask & 0xFFFFFFFF));
+
     return 0;
 }
+
 
 //only call if dump_memory_map succeeds / returns 1
 int64_t kgetmemsize(){
@@ -132,11 +142,11 @@ void* kcreate_memmap(){
     m->max_mem_size = kgetmemsize();
     m->max_usable_mem_size = m->max_mem_size - 1024 * sizeof(INTMAX_MAX);
 
-    serial_write_string("\nthe memory size is\n");
+    kprintf("\nthe memory size is\n");
     serial_write_dec((int)((m->max_mem_size) / (1000.0 * 1000.0))); // returns MBs
-    serial_write_string(" MB\nmemmap location is\n");
+    kprintf(" MB\nmemmap location is\n");
     serial_write_hex32((uint32_t)m);
-    serial_write_string("\n");
+    kprintf("\n");
 
     //return the location of the mem_block_array
     return (void*)m->mem_block_array;
@@ -147,7 +157,7 @@ void* kcreate_memmap(){
 #define MEM_START 0x01000000
 
 
-// cast to mem_loc_t, will only be called by kmalloc, so we set the in use flag here [TODO] fix
+// cast to mem_loc_t, will only be called by kmalloc, so we set the in-use flag here [TODO] fix
 void* find_first_page_free()
 {
     for(size_t i = MEM_START; i < m->max_usable_mem_size; i++)
@@ -159,7 +169,7 @@ void* find_first_page_free()
         }
     }
     // else this means we ran of out memory, highly unlikely since we have 4kb pages and a bunch of memory. but if it does happen
-    serial_write_string("[CRITICAL] memory ran out. triple faulting");
+    kprintf("[CRITICAL] memory ran out. triple faulting");
 }
 
 

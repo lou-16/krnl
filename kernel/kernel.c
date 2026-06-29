@@ -1,19 +1,25 @@
 #include "serial.h"
-#include "gdt.h"
+#include "args.h"
 #include "multiboot.h"
 #include "memmap.h"
-#include "interrupts.h"
-#include "../drivers/vga/BGA.h"
-#include "../drivers/pit/pit.h"
-//#include "../drivers/ps2/keyboard.h"
-// drivers
 
+//#include "drivers/bga/BGA.h"
+#include "drivers/gpu/gpu.h"
+#include "drivers/pit/pit.h"
+//#include "drivers/ps2/keyboard.h"
+
+#include "arch/i386/interrupts.h"
+#include "arch/i386/gdt.h"
+
+//extern struct __boot_args__* boot_args;
 
 void kernel_main(uint32_t magic, multiboot_info_t* mbi){
 
+    //boot_args = parse_boot_args((uint32_t*)mbi->cmdline);
+
     serial_init();
     if( magic != MULTIBOOT_BOOTLOADER_MAGIC) {
-        serial_write_string("Invalid multiboot magic");
+        kprintf("Invalid multiboot magic");
         return;
     }
 
@@ -21,7 +27,7 @@ void kernel_main(uint32_t magic, multiboot_info_t* mbi){
 
     gdt_install();
     if(check_protected_mode() == 0){
-        serial_write_string("protected mode active");
+        kprintf("protected mode active\n");
     };
     asm volatile("cli");
     setup_exceptions();
@@ -31,17 +37,51 @@ void kernel_main(uint32_t magic, multiboot_info_t* mbi){
 
 
     kcreate_memmap();
-    
     //install_irq_handlers();
     //test output
-    serial_write_string("Hello from serial output!\n");
+    kprintf("Hello from Krnl\n");
 
-    bga_enable();
-    bga_test();
-    uint16_t color = 0x7bef;
+    while(1);
 
-    while(1){
-        //color = (color == 0x7bef? 0x001f : 0x7bef);
-        test_color(color);
-    }
 }
+
+/*
+    PROPOSED FUNCTION:
+    void kernel_main(struct kernel_info* kInfo)
+    {
+        ParseKInfo(kInfo);
+        initIO();
+        initRAMFS();
+        initDisplay();
+        initDrivers();
+        initVFS() if needed;
+        initProcesses();
+        
+        RunDefaultTasks() (something that simply sends the kernel on its merry way, like schedules a bunch of prepared tasks like a tty);
+        while(1);
+    }
+
+    seems way more cooler imo. now its very obvious what i need to verify.
+
+    what about kInfo?
+
+    heres what i propose, we'll see what happens:
+    kernel_info {
+        CPU_ARCH,
+        CPU_CORES,
+        MAIN_MEM_LEN,
+        PAGING_STATUS,
+        FRAMEBUFFER_INFO {
+            FB_ptr,
+            FB_x,
+            FB_y,
+            FB_bpp,
+            FB_pitch (and more shit)
+        }
+        and further architechture agnostic info, maybe where is the kernel located, and where does the userland begin, and where is the initRAMVFS.
+        like multicore CPUs will have their own optimizations that i can study from the manual, who knows?
+
+        anyways. i feel like i have a much higher chance of making it, because all i need to do is decide the interfaces, and move the existing codebase.
+    }
+
+*/
