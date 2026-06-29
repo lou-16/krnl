@@ -32,7 +32,6 @@ static inline void serial_write_string(const char* str) {
         serial_write_char(str[i]);
 }
 
-// These are declared here but defined in serial.c
 void serial_write_hex32(uint32_t val);
 void serial_write_hex64(uint64_t val);
 void serial_write_dec(uint64_t val);

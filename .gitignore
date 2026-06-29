@@ -7,3 +7,14 @@ krnl.iso
 
 temp/
 qemu.log
+/build/
+/iso/
+
+.vscode/
+
+krnl.iso
+
+temp/
+qemu.log 
+dockerfile
+/scripts
