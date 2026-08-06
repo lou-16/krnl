@@ -17,4 +17,5 @@ krnl.iso
 temp/
 qemu.log 
 dockerfile
+.DS_Store
 /scripts
