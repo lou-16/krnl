@@ -42,7 +42,6 @@ void load_idt() {
     pit_init(100);                               // then init PIT
     PIC_unmask_master(0);                      // then unmask
     uint8_t val = inb(0x21);
-    serial_write_hex32(val);
 
     asm volatile("sti");                         // then enable interrupts
 }

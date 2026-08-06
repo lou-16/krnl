@@ -14,5 +14,5 @@ void pit_init(uint32_t frequency)
 
 void pit_handler()
 {
-    serial_write_string(".");
+    
 }
