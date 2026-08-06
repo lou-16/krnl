@@ -35,8 +35,6 @@ void kernel_main(uint32_t magic, multiboot_info_t* mbi){
     //enable_keyboard();
     asm volatile("sti");
 
-
-    kcreate_memmap();
     //install_irq_handlers();
     //test output
     kprintf("Hello from Krnl\n");
@@ -56,7 +54,7 @@ void kernel_main(uint32_t magic, multiboot_info_t* mbi){
         initDrivers();
         initVFS() if needed;
         initProcesses();
-        
+
         RunDefaultTasks() (something that simply sends the kernel on its merry way, like schedules a bunch of prepared tasks like a tty);
         while(1);
     }
@@ -83,5 +81,7 @@ void kernel_main(uint32_t magic, multiboot_info_t* mbi){
 
         anyways. i feel like i have a much higher chance of making it, because all i need to do is decide the interfaces, and move the existing codebase.
     }
+
+    7 months ago huh. lets do this again. hmm i can do a init info here. ill need to move some code into a specific to x86. lets do it.
 
 */
