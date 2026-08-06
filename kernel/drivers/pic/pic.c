@@ -49,10 +49,8 @@ void PIC_unmask_master(uint8_t irq)
 
 uint32_t isr_handler_c(uint32_t int_no)
 {
-	kprintf("recieved interrupt: %d", int_no);
     switch (int_no){
     case 32: 
-		serial_write_string("fucku");
         pit_handler();
         break;
         
@@ -65,11 +63,9 @@ uint32_t isr_handler_c(uint32_t int_no)
 	
     if (int_no >= 40)
     {
-		serial_write_string("hilol");
 		outb(0xA0, 0x20);  // Slave PIC
 	}
 	if (int_no >= 32){
-		serial_write_string("EOI being sent\n");
 		outb(0x20, 0x20); 
 
 	}
